@@ -1,0 +1,132 @@
+\documentclass{article}
+\input{preamble.tex}
+
+\begin{document}
+    \section{Forelesning 2}
+
+    \subsection{Tall i Haskell}
+\subsection{Funksjonsdefinisjoner}
+
+Matematisk skriver vi \( f: A \rightarrow B \) for å si at funksjonen \( f \) tar input av typen \( A \) og returnerer \( B \). Vanligvis skrives funksjoner som
+
+\[ f\left( x \right) = x^2 + 4 \]
+
+Her er det at implisitt at det er en funksjon av typen
+
+\[ f: \R \rightarrow \R \]
+
+I haskell deklareres funksjoner på følgende måte
+
+\begin{itemize}
+    \item Type deklarasjon: \texttt{myFun :: A -> B}
+\end{itemize}
+
+
+    \subsection{Polymorfi}
+
+    Ordet \textit{polymorfi} kommer fra de greske røttene polus og morphe, i.e. \textit{mange} og \textit{form}. Så kort oversatt til norsk: \textit{flerformet}.
+\bigskip
+
+I haskell er det to typer polymorfi:
+
+\begin{itemize}
+    \item Parametrisk polymorfi (aka. typevariabler)
+    \item Ad-Hoc polymorfi (aka. typeklasser)
+\end{itemize}
+
+Idag skal vi se på den første av disse.
+\bigskip
+
+En parametrisk, polymorf funksjon i Haskell er en funksjon som bruker typevariabler til å defineres for alle typer samtidig.
+
+OBS:
+
+\begin{itemize}
+    \item Typevariables begynner alltid med liten forbokstav.
+    \item Konkrete typer (ikke variabler) har stor forbokstav.
+    \item Noen innebygde konkrete typer har speisell syntaks: lister, tupler osv.
+\end{itemize}
+
+\begin{eg}
+    Et veldig enkelt eksempel
+    \begin{align*}
+        &\texttt{id :: t -> t} \\
+        & \texttt{id a = a}
+    \end{align*}
+
+    Denne funksjonen tar et element inn og spytter samme element ut. Ofte bruker vi (forvirrende nok) samme bokstav for typen og elementene i typen
+    \begin{align*}
+        &\texttt{const :: a -> b -> a} \\
+        & \texttt{const a b = a}
+    \end{align*}
+\end{eg}
+
+\begin{eg}
+    Klarer vi å finne en type for funksjonen fra forrige forelesning?
+
+    \begin{align*}
+        & \texttt{h :: ?} \\
+        & \texttt{h z x = z (z x)}
+    \end{align*}
+
+    \textbf{Svar:}
+
+    \begin{align*}
+        &\texttt{h :: (a -> a) -> a -> a} \\
+        & \texttt{h z x = z (z x)}
+    \end{align*}
+
+    I lambdakalkyle er dette representasjonen av tallet 2.
+\end{eg}
+
+
+\begin{eg}
+    Selv de enkleste ting kan være polymorfe.
+
+    \begin{align*}
+    \texttt{[] :: [a]}
+    \end{align*}
+
+    Den tomme listen er en liste av alle typer.
+\end{eg}
+
+\begin{ex}
+    Lag en funksjon med typen
+
+    \begin{enumerate}
+        \item \texttt{f :: a -> a -> a}
+        \item \texttt{g :: a -> [[a]]}
+        \item \texttt{t :: (a -> b) -> (b -> c) -> (a -> c)}
+        \item \texttt{s :: (a -> b -> c) -> (a -> b) -> a -> c}
+    \end{enumerate}
+
+    \textbf{Svar:}
+
+    \begin{enumerate}
+        \item \texttt{f x y = x} 
+        \item \texttt{g a = [[a,a], [a,a]]}
+        \item \texttt{t f g a = g (f a)}
+        \item \texttt{s f g a = f a (g a)}
+    \end{enumerate}
+\end{ex}
+
+\subsection{Uforanderlige verdier}
+En verdi er \textit{uforanderlige} dersom den ikke kan endres etter at den er opprettet. I Haskell er \textit{alle} verdier uforanderlige. Forandring uttrykkes istedet ved hjelp av funksjoner.
+\bigskip
+
+ I begynnelsen kan det være litt forvirrende fordi noe som heter "aliasing", gjør at det ser ut som om verdier kan forandre seg i GHCi.
+
+\subsection{Neste tema: Vanlige typer}
+
+Vi skal gå gjennom følgende typer:
+
+\begin{itemize}
+    \item Tupler
+    \item Maybe
+    \item Lister
+    \item Either
+    \item Map
+\end{itemize}
+
+
+\end{document}

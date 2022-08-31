@@ -1,0 +1,62 @@
+\documentclass[twocolumn]{article}
+\input{preamble.tex}
+
+\begin{document}
+\section{Forelesning 1}
+\subsection{Plan for forelesningen}
+\begin{itemize}
+    \item Gjennomgang av forventinger
+    \item Online ressurser
+    \item Eksempler på programmer i Haskell
+    \item Funksjoner i Haskell
+    \item Strukturen til et Haskellprogram
+\end{itemize}
+
+\subsection{Online Haskellressurser}
+
+\begin{itemize}
+    \item \textit{Learn You a Haskell}: learnyouahaskell.com
+    \item \textit{Haskell wikibok}: en.m.wikibooks.orgs/wiki/haskell
+    \item \textit{Hoogle}: hoogle.haskell.ord
+    \item \textit{Mer}: haskell.ord/documentation
+\end{itemize}
+
+\subsection{Eksempler på programmer laget i Haskell}
+\begin{itemize}
+    \item Pandoc
+    \item Xmonad
+    \item Darcs
+    \item GF - Grammatical Framework
+    \item GitHub's semantic tool
+\end{itemize}
+
+Og andre diverse selskaper som Standard Chartered og Klarna.
+
+\subsection{Funksjoner}
+Hva er en funksjon? Vi bruker en funksjon ved å få en verdi ved å gi den et argument.
+\bigskip
+
+I matematikken brukes \( f\left( x \right) \) for å bruke en funksjon \( f \) på en verdi \( x \). Hvis funksjonen tar imot flere argumenter skriver man \( f\left(x,y,z\right) \) for å gi dem.
+\bigskip
+
+I Haskell droppes parantesene, og man skriver bare \verb!f x!, og dersom det er flere argumenter skrives det \verb!f x y z!. For å sette sammen funksjoner, må vi likevel bruke paranteser: \verb!f (g x)!. Dersom vi hadde skrevet \verb!f g x! ville vi gitt to argumenter til funksjonen.
+
+\subsection{Haskellprogrammer}
+Filnavn i haskell slutter på \verb!.hs! - ellers er hver fil ofte en \textit{modul}, hvor filnavn ofte er det samme som modulnavn. Modulnavn kommer øverst i filen, og er på formen \verb!module moduleName where!. Verdien \verb!main! er en spesiell verdi som har typen \verb!IO ()!. For å lage en kjørbar fil må main verdien ligge i modulen main.
+
+\subsubsection{Presidensregler}
+I Haskell binder funksjonene sterkes, det vil si at koden under tolkes på følgende måte.
+% \begin{spverbatim}
+%     f x = x + 1 .1
+%     f 1 * 3 = (f 1) * 3 = 12 .2
+% \end{spverbatim}
+
+% Hvis det var meningen at det skulle tolkes på annen måte, må dette eksplisitt skrives
+
+% \begin{spverbatim}
+%     f (1 * 3).1
+% \end{spverbatim}
+
+% asdf
+
+\end{document}
