@@ -1,0 +1,198 @@
+\documentclass{article}
+\input{preamble.tex}
+
+\begin{document}
+    \section{Forelesning 3}
+
+    \subsubsection{Plan for forelesningen}
+
+    Vi begynner på lista fra forrige gang:
+
+    \begin{itemize}
+        \item Tuppler
+        \item Maybe
+        \item Lister
+        \item Either
+        \item Map
+    \end{itemize}
+
+    Vi kommer definitivt ikke lenger enn til lister idag.
+
+    \subsection{Tuppler: Eksempeltyper}
+
+    Tuppeltyper skrives med paranteser og komma:
+
+    \begin{itemize}
+        \item \texttt{(Integer, String)} er typen av alle par av heltall og strenger.
+        \item \texttt{(Double,Double,Double)} er typen av alle 3D koordinater, eller vektorer, med dobbel presisjonsflyttall.
+    \end{itemize}
+    \begin{align*}
+        & \vdots \\
+        &\text{osv}
+    \end{align*}
+
+    \subsubsection{Sammenligning med lister}
+
+    \begin{itemize}
+        \item Tuppler: Fiksert antall posisjoner for data.
+        \item Hver posisjon har en type.
+        \item Lister: Variabelt antall posisjoner for data (lengde)
+        \item Lister: Alle elementer i listen har samme type.
+    \end{itemize}
+
+\subsubsection{Kanonsike verdier}
+
+De kanoniske verdiene i tuppeltypene er de på formen:
+
+\subsubsection{Funksjoner definert med møn}
+
+\begin{eg}
+    La oss skrive en funksjon som normaliserer en vektor. (Det vil si å skalere den slik at den har lengde 1.)
+
+    \begin{figure}[H]
+        \begin{center}
+            \includegraphics[width=0.95\textwidth]{normvec.png}
+        \end{center}
+    \end{figure}
+\end{eg}
+
+Generelt definerer vi mønster matching hvordan funksjonen opererer på en kanonisk verdi av typen.
+\medskip
+
+\( \left( 1,2,3 \right) \) er en kanonisk verdi av typen \texttt{(Double, Double, Double)}
+
+\subsubsection{Projeksjoner}
+For par (tupler med to posisjoner), har vi to funksjoner for å hente ut data fra et par:
+
+\begin{align*}
+    &\texttt{fst :: (a, b) -> a} \\
+\end{align*}
+
+\subsection{Currying}
+En funksjon som tar to verdier har vi sett kan ha type på formen:
+
+\[ \texttt{A -> B -> C} \]
+
+Eksempel fra boken
+
+\begin{align*}
+    &\texttt{add :: (Integer, Integer) -> Integer} \\ 
+    &\texttt{add (x, y) = x + y}\\
+    &\texttt{add' :: Integer -> Integer -> Integer}\\
+    &\texttt{add' x y = x + y}
+\end{align*}
+
+\subsubsection{Fordeler med begge}
+Fordelen med currying er partiell applikasjon
+
+\[ \texttt{add' 3 :: Integer -> Integer} \]
+
+Fordelen med uncurrying er at det er lett å mappe funksjonen inn i en struktur:
+
+\[ > map add 3 [(1,2), (2,1), (0,3)] \]
+
+\subsubsection{Funksjoner for å gå frem og tilbake}
+
+Gjøre en funksjon curried:
+
+\[ \texttt{curry :: ((a,b) -> c) -> a -> b -> c} \]
+
+Gjøre en funksjon uncurried:
+
+\[ \texttt{uncurry :: (a -> b -> c) -> (a,b) -> c} \]
+
+\subsubsection{Hva er konvensjonen i Haskell}
+
+Standard i Haskell er å definere funksjonen som ferdig curry-et, og heller bruke uncurry eksplisitt der det er behov.
+
+\[ \texttt{map (uncurry (+)) [(x,y) | x <- [0..3], y <- [x..3]]} \]
+
+\subsection{Maybe}
+
+Vi lager \textit{Maybe-typer} ved å skrive \texttt{Maybe} foran typen
+
+\begin{itemize}
+    \item \texttt{Maybe Integer} er typen av kanskje heltall
+\end{itemize}
+
+\begin{eg}
+    Eksempler på elementer
+
+    \begin{align*}
+        &\texttt{Just 3 :: Maybe Integer} \\
+        &\texttt{Nothing :: Maybe Integer}
+    \end{align*}
+
+    \[ \texttt{readMaybe :: String -> Maybe Integer} \]
+
+    \begin{note}
+        \texttt{readMaybe} må importeres fra \texttt{Text.Read}
+    \end{note}
+\end{eg}
+
+\subsubsection{Konstruktører}
+
+Maybe typene har to konstruktører
+\begin{itemize}
+    \item \texttt{Nothing :: Maybe a}
+    \item \texttt{Just :: a -> Maybe a}
+\end{itemize}
+
+\subsubsection{Nyttige funksjoner}
+
+La oss se på noen nyttige funksjoner
+
+\begin{itemize}
+    \item \texttt{maybe :: b -> (a -> b) -> Maybe a -> b}
+    \item \texttt{fromMaybe :: a -> Maybe a -> a}
+    \item \texttt{fmap :: (a -> b) -> Maybe a -> Maybe b}
+\end{itemize}
+
+Man kan også få ut boolske verdier fra en Maybe-verdi
+
+\subsection{Lister}
+
+\begin{itemize}
+    \item \texttt{[Integer]} er en liste av heltall
+    \item \texttt{[Char] = String} er en streng / liste med characters 
+    \item \texttt{[[Integer]]} er en liste med lister av heltall
+    \item \texttt{[Double -> Double]} er en liste med funksjoner på flyttal
+\end{itemize}
+
+\subsubsection{Konstruktører}
+
+Lister har to konstruktører
+
+\begin{itemize}
+    \item \texttt{[] :: [a]} - Den tomme listen
+    \item \texttt{(:) :: a -> [a] -> [a]} - Legger et element foran i listen
+\end{itemize}
+
+Dermed er kanoniske element i en listetype \texttt{[A]} de som er på formen
+
+\begin{itemize}
+    \item \texttt{[]} eller
+    \item \texttt{a : as} hvor \texttt{a :: A} og \texttt{as :: [A]}
+\end{itemize}
+
+Syntaktisk sukker \texttt{[1,2,3,]} istedetfor \texttt{1:2:3:[]}
+
+\subsubsection{Mønster}
+
+Vi kan definere funksjoner på lister ved hjelp av mønster som matcher \texttt{(:)} og \texttt{[]:}
+
+\begin{align*}
+    &\texttt{safeHead :: [a] -> Maybe a} \\
+    &\texttt{safeHead}
+\end{align*}
+
+\subsubsection{Rekursjon}
+
+Senere skal vi se hvordan vi kan definere alle mulige funksjoner på lister vha. rekusjon
+
+\begin{align*}
+    &\texttt{duplicate :: [a] -> [a]} \\
+    &\texttt{dublicate [] = []} \\
+    &\texttt{duplicate (a : as) = a : a : duplicate as}
+\end{align*}
+\end{document}
