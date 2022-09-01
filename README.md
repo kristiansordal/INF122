@@ -1,4 +1,4 @@
-### INF122
+# INF122
 
 This is a collection of lecture notes and exercises from the course INF122 - Funksjonell Programmering, at the University of Bergen.
 
