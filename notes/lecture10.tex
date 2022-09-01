@@ -3,4 +3,107 @@
 
 \begin{document}
     \section{Forelesning 10}
+
+    \subsection{Plan for forelesningen}
+    \begin{itemize}
+        \item Induktive datastrukturer
+        \item AVL trær
+        \item Syntakstrær
+    \end{itemize}
+
+   \subsection{Induktive data strukturer}
+   En datastruktur er induktiv hvis den bruker seg selv som argument til minst en av konstruktørene.
+
+    \begin{lstlisting}
+    data binTree a = Empty
+        | Branch (BinTree a) a (BinTree a)
+    \end{lstlisting}    
+
+    ELementene i en induktiv datastruktur kan settes sammen ved hjelp av konstrukt;rene til store strukturer (trær)
+
+    \subsection{Rekursjon på induktive datastrukturer}
+    For å definere en funksjon som tar en indktiv struktur som argumen ved rekursjon
+
+    \begin{itemize}
+        \item Gjøre mønster matching på funksjonen:
+            \begin{itemize}
+                \item Lag et tilfelle for hver konstruktør
+                \item Argumentene til konstruktøren blir variabler
+            \end{itemize}
+        \item Definer funksjonen i hvert tilfelle
+        \item Kall funksjonen rekursivt på de variblene som igjen er elementer av den induktive datastrukturen
+    \end{itemize}   
+
+    \begin{eg}
+        La oss beregne høyden av et binært tre
+
+    \begin{lstlisting}
+    height :: BinTree a -> Integer
+    height Empty = 0
+    height (Branch lefts _ rights)
+        = 1 + max (height lefts) (height rights)
+    \end{lstlisting}
+
+    Følger denne funksjonen oppskriften fra forrige slide?
+    \end{eg}
+
+
+    \begin{figure}[H]
+        \begin{center}
+            \includegraphics[width=0.95\textwidth]{rotasjontree}
+        \end{center}
+        \caption{Illustrasjon av rotasjonsoperasjonen}
+        \label{fig:rotasjontree}
+    \end{figure}
+
+    \subsection{Rotasjon av trær}
+    Et tre kan roteres mot høyre, eller mot venstre, og en rotasjon kan endre høyden til treet.
+    \begin{eg}
+        Rotasjon av trær
+       \begin{figure}[H]
+           \begin{center}
+               \includegraphics[width=0.65\textwidth]{rotationexample}
+           \end{center}
+           \caption{Bruk rotasjonsoperasjoner til å balansere treet.}
+           \label{fig:rotationexample}
+       \end{figure} 
+
+       \begin{figure}[H]
+        \centering
+        \incfig{rotatetree}
+        \end{figure}
+    \end{eg}
+
+    \subsection{AVL Trær}
+    \begin{itemize}
+        \item Introdusert av Adelson-Velsky og Landig i 1962
+        \item Består av et binært tre med ekstra balanse informasjon
+        \item Definerer et API p3l binære trær som roterer hver gang en ubalanse oppstår
+    \end{itemize}
+
+    \subsection{AVL Trær: Implementasjon}
+    AVL trær har en balanseinvariant
+    \begin{itemize}
+        \item Ingen subtrær kan ha en høydeforskjell på mer enn 1.    
+        \item En hver forgening er dekorert med høydeforskjellen på de to subtrærne. Denne kalles \textbf{balansefaktoren}.
+    \end{itemize}
+
+    \begin{ex}
+        Som en øvelse før vi gjør AVL trær, så implementerer vi sorterte lister, dekorert med om de er av odde eller partalls lengde.
+    \end{ex}
+
+    \newpage
+
+    \subsection{AVL Datatypen}    
+    \begin{lstlisting}
+     data BalanceFactor = LeftHeavy
+                        | Balanced
+                        | RightHeavy
+                        deriving (Eq, Show)
+    data AVLTree a = Empty
+                   | Branch BalanceFactor
+                            (AVLTree a)
+                            a
+                            (AVLTree a)
+    \end{lstlisting}
 \end{document}

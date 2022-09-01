@@ -59,16 +59,14 @@ isStep x input = do
           take 2 processedData
 
   if stepCount >= 1
-    then do
-      -- as we do not divide stepCount by two, we have to ensure that we only print step half the time
-      -- this is because a step is defined by the period, which is defined by the crossing of the x-axis
-      -- twice
+    then -- as we do not divide stepCount by two, we have to ensure that we only print step half the time
+    -- this is because a step is defined by the period, which is defined by the crossing of the x-axis
+    -- twice
+
       if even x
         then do
           putStrLn "Step!"
           hFlush stdout
           isStep (x + 1) list
-        else do
-          isStep (x + 1) list
-    else do
-      isStep x list
+        else isStep (x + 1) list
+    else isStep x list
