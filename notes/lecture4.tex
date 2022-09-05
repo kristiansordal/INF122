@@ -1,0 +1,70 @@
+\documentclass{article}
+\input{preamble.tex}
+
+\begin{document}
+    \section{Forelesning 4}
+
+    \subsection{Plan for forelesning}
+
+    Vi fortsetter fra forrige gang:
+    \begin{itemize}
+        \item Eksempler på listefunksjoner
+        \item Assosiasjonslister
+        \item Map
+        \item Listekomprehensjon
+        \item (Bonus: Isomofi av lister)
+    \end{itemize}
+
+    \subsection{Rush}
+
+    Med unntak av 1979, utga rockebandet "Rush" ett album hvert å i perioden 1976-1982.
+
+    \subsection{Nyttige listefunksjoner}
+
+
+    \begin{align*}
+        &\texttt{elem :: (Eq  a) => a -> [a] -> Bool} \\
+        &\texttt{words :: String -> [String]} \\
+        &\texttt{unwords :: [String] -> String} \\
+    \end{align*}
+
+    \begin{eg}
+        Skriv en funksjon som fjerner alle ord som inneholder bokstaven "e".
+
+    \end{eg}
+
+    \begin{align*}
+        &\texttt{removee :: String -> String} \\
+        &\texttt{removee text = unwords (filter (notElem 'e') (words text))} \\
+    \end{align*}
+
+    \subsection{Zip}
+
+    Zip er en funksjon med typing
+
+    \[ \texttt{zip :: [a] -> [b] -> [(a,b)]} \]
+
+    \subsection{Currying: Forklaring}
+
+    En funksjon som tar to argumenter har vi sett kan ha type på formen:
+
+    \[ \texttt{A -> B -> C} \]
+
+    Dette kalles "currying" 
+
+    \subsection{Lookup}
+
+    Den nyttigste funksjonen for assisiasjonslister:
+
+    \[ \texttt{lookup :: a -> [(a,b)] -> Maybe b} \]
+
+    \subsection{Isomorfi av typer: Definisjon}
+    Vi sier at to typer \( A \) og \( B \) er isomorfe dersom vi kan funne funksjoner
+
+    \begin{align*}
+        &\texttt{f :: A -> B og}\\
+        &\texttt{g :: B -> A}
+    \end{align*}
+
+
+\end{document}
