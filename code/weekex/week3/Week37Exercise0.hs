@@ -1,9 +1,7 @@
 module Week37Exercise0 where
 
--- zip, map, show, filter
-
 namesAndAges :: [String] -> [Integer] -> [String]
-namesAndAges names ages = zippedList
+namesAndAges names ages = [name ++ " is " ++ year ++ " years old" | (name, year) <- stringList]
   where
-    zippedList :: [(String, Integer)]
-    zippedList = filter (zippedList . snd > 50) (zip names ages)
+    filteredList = filter (\(_, age) -> age <= 50) (zip names ages)
+    stringList = [(name, show year) | (name, year) <- filteredList]
