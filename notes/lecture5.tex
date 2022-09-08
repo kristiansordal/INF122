@@ -1,0 +1,72 @@
+\documentclass{article}
+\input{preamble.tex}
+
+\begin{document}
+    \section{Forelesning 5}
+
+    \subsection{Oblig 1}
+    Obligene kommer til å handle om å lage ett program for å gjøre beregninger tilsvarende de beregningene en skrittteller ville brukt for å telle antall skritt vi går.
+
+    Kanskje det kan være lurt og interpolere?
+
+
+    \subsection{Plan for forelesning}
+    \begin{itemize}
+        \item Mer listekomprehensjon
+        \item Lambda uttrykk \( \left( \lambda \right) \)
+    \end{itemize}
+
+    \subsection{Pythagoreiske trippler}
+    Pythagoras teorem sier at i  en rettvinklet trekant med sidelengder \( a \) og \( b \) (kateter)) og \( c \) (hyptenus) har forholdet \( a^2 + b^2 = c^2 \)
+
+% \begin{figure}[H]
+% 	\centering
+% 	\incfig{listcomp}
+% \end{figure}
+
+    Det er sjeldent at alle disse tre blir heltall, for eksempel, dersom \( a = b = 1 \) så er \( c = \sqrt{2} \). Men det hender, for eksempel er \( 3^2 + 4^2 = 25 = 5^2 \). Pythagoreiske trippler er definert som
+
+    \[ \left\{ \left( a,b,c \right) \in \R^3, a^2 + b ^2 = c^2 \right\} \]
+
+    \subsection{\( \lambda \)-utrrykk}
+
+    \subsubsection{Historisk Opphav}
+    \( \lambda \)-notasjon ble introdusert av Alonzo Chruch på 30-tallet, og først adoptert i et faktisk programmeringsspråk i McCarthus LISP på 50-tallet.
+    \bigskip
+
+    I Haskell ser \( \lambda \)-uttrykk ut som:
+
+    \[ \verb!\x y z -> UTTRYKK MED x y og z I SEG! \]
+
+    Dette lager en ny, anonym funksjon som tar \texttt{x y z} som variable. 
+
+    \begin{eg}
+        \[ \verb!\x -> [x]! \]
+
+        Dette uttrykket står for funksjonen som tar et element og lager en liste med kun ett element.
+    \end{eg}
+
+    \begin{itemize}
+        \item Et \( \lambda \)-uttrykk står for en funksjon og kan brukes alle steder hvor man ville hatt en funksjon.
+        \item Funksjonen kan ta ett eller flere argumenter.
+        \item Etter \texttt{->} kommer uttrykket som definerer funksjonen
+        \item Et \( \lambda \)-uttrykk har ikke noe navn (med mindre du gir det et)
+    \end{itemize}
+
+
+    \subsubsection{Hva er poenget?}
+
+    En \( \lambda \)-funksjon kan brukes når vi egentlig hadde brukt en hjelpefunksjon, men vi ikke vil definere en ny global funksjon.
+
+    \subsubsection{Når skal jeg bruke en \( \lambda \)-funksjon}
+    Bruk et \( \lambda \)-uttrykk når:
+
+    \begin{itemize}
+        \item Du kun behøver funksjonen akkurat der du er.
+        \item Funksjonen bruker variabler fra konteksten du er i
+        \item Når uttrykket er lite nok til å bli leselig.
+        \item Når det ikke finnes en enekel måte å skrive uttrykket som en kombinasjon av andre funksjoner
+        
+    \end{itemize}
+
+\end{document}
