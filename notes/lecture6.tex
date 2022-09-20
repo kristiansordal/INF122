@@ -1,0 +1,190 @@
+\documentclass{article}
+\input{preamble.tex}
+
+\begin{document}
+    \section{Forelesning 7}
+
+    \subsection{Plan for forelesningen}
+    \begin{itemize}
+        \item Let-bindinger
+        \item Introduksjon til rekursjon
+    \end{itemize}
+
+    \subsubsection{Let-bindinger}
+
+    Vi kan innføre midlertidige verdier i programmene våre ved å bruke nøkkelordet \texttt{let} og \texttt{in}:
+
+    \begin{lstlisting}
+        solveQuadratic a b c
+            = let discriminant = b*b - 4*a*c 
+                in ((-b + sqrt discriminant)/(2*a)
+                    , (-b - sqrt discriminant)/(2*a))
+    \end{lstlisting}
+
+    \subsubsection{Mønster matching}
+    Hva gjør denne funksjonen?
+    \begin{lstlisting}
+        ordpair :: (Ord a) => a -> a -> (a,a)
+        ordpair x y = if x <= y then (x, y) else (y, x)
+    \end{lstlisting}
+
+    Den plasserer det minste elementet i input i første index i tuplen som funksjonen returnerer.
+    \medskip
+
+    Hva gjør funksjonen \texttt{diff}
+
+    \begin{lstlisting}
+        diff x y = let (a, b) = ordpair x y
+            in (b - a)
+    \end{lstlisting}
+
+
+    \subsubsection{Flere let features}
+
+    Let uttrykk kan brukes
+    \begin{itemize}
+        \item til å definerer funksjoner
+        \item i \( do \)-notasjon
+    \end{itemize}
+
+
+    \subsection{Rekursjon}
+    Fra engelsk: "recursion" fra
+
+    \begin{itemize}
+        \item "recur" på norsk "å skje igjen" eller "gjentatt"
+    \end{itemize}
+
+    (egentlig fra latin "recurro", som betyr "å løpe tilbake"), men hva er det som "gjentas" eller skjer igjen?
+
+    \begin{definition}
+        En funksjon er rekursiv dersom den kaller seg selv igjen (muligens med nye parametere).
+    \end{definition}    
+    \newpage
+
+    \begin{eg}
+        Her er en av ukesoppgavene fra uke 1, skrevet rekursivt.
+        \begin{lstlisting}
+            triangle :: Integer -> Integer
+            triangle n = if n == 0
+                then 0
+                else n + (triangle (n - 1))
+        \end{lstlisting}
+    \end{eg}
+
+    \subsubsection{Oppsett}
+
+    Strukturen i en typisk rekursiv funksjon
+
+    \begin{itemize}
+        \item Grunntilfelle(r)
+        \item Rekursive tilfeller
+    \end{itemize}
+
+    \begin{eg}
+        Vi kan la mønstrene i argumentet bestemme grunntilfellet og rekursive tilfeller
+
+        \begin{lstlisting}
+            sum' :: [Integer] -> Integer
+            sum' [] = 0
+            sum' (x:xs) = x + sum' xs
+        \end{lstlisting}
+    \end{eg}
+
+    \begin{eg}
+        Rekursive funskjoner er relativt enkle å bevise ting om
+
+        \begin{lstlisting}
+            sum' [a,b,c] = a + b + c
+        \end{lstlisting}
+    \end{eg}
+
+    \begin{proof}
+        Vi har at
+
+        \begin{lstlisting}
+            sum' [a,b,c]
+            = sum (a:b:c:[])
+            = a + sum'(b:c:[])
+            = a + b + sum'(c:[])
+            = a + b + c + sum' []
+            = a + b + c + 0
+            = a + b + c
+        \end{lstlisting}
+    \end{proof}
+
+    \subsection{Forskjellige typer rekursjon}
+    \begin{itemize}
+        \item Rekursjon på heltall
+        \item Rekursjon på lister (og senere datatyper)
+        \item Produktiv rekursjon
+        \item Generell rekursjon
+    \end{itemize}
+
+    \subsubsection{Rekursjon på heltall}
+
+    \begin{lstlisting}
+        countDown :: Integer -> [Integer]
+        countDown 0 = [0]
+        countDown x = x:(counDown (x - 1))
+    \end{lstlisting}
+
+     \begin{itemize}
+         \item Oftests er 0 eller 1 grunntilfellet.
+         \item De rekursive kallene kaller funksjonen med et midnre parameter.
+     \end{itemize}
+
+     OBS: Dette gir ofte partielle funksjoner.
+
+     \begin{itemize}
+         \item Hva skjer med funksjonen over hvis man gir negativ input?
+             \begin{itemize}
+                 \item Jo den vil kalle på seg selv i all evighet ettersom den aldri når grunntilfellet.
+             \end{itemize}
+         \item Hvordan burde vi ordne det slik at vi ikke får problemer med negative tall?
+             \begin{itemize}
+                 \item Enten ved å sjekke om tallet er negativt, og dersom det er det, legger vi til 1 istedenfor og trekke fra, eller så kan vi kalle funksjonen på absoluttverdien av \( x \).
+             \end{itemize}
+     \end{itemize}
+
+     \subsection{Primitiv vs generell rekursjon (Ackermann)}
+
+     Men det finnnes veldig kompliserte ting man kan gj;re hvis man vil:
+
+     \begin{lstlisting}
+         ackermann :: Integer -> Integer -> Integer
+         ackermann 0 n = n + 1
+         ackermann m 0 = ackermann (m - 1) 1
+         ackermann m n = ackermann (m - 1) (ackermann m (n - 1))
+     \end{lstlisting}
+
+     Denne funksjonen vokser veldig fort! Men i teorien kommer den alltid frem til et svar.
+
+     \subsection{Rekursjon på lister og andre datastrukturer}
+
+     Vi har allerede sett et eksempel, la oss ta noen til
+
+     \begin{eg}
+         For å reversere en liste rekursivt
+
+         \begin{lstlisting}
+             reverse :: [a] -> [a]
+             reverse [] = []
+             reverse (a : as) = reverse as ++ [a]
+         \end{lstlisting}
+
+         \begin{itemize}
+             \item Gjør mønster matching på alle konstruktørene.
+             \item Det rekursive kallet gjøres direkte på variablene introdusert av mønsteret.
+         \end{itemize}
+     \end{eg}
+
+     \begin{eg}
+         For å definere zip
+
+         \begin{lstlisting}
+             
+         \end{lstlisting}
+     \end{eg}
+    
+\end{document}

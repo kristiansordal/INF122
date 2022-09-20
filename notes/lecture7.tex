@@ -4,187 +4,82 @@
 \begin{document}
     \section{Forelesning 7}
 
-    \subsection{Plan for forelesningen}
-    \begin{itemize}
-        \item Let-bindinger
-        \item Introduksjon til rekursjon
-    \end{itemize}
-
-    \subsubsection{Let-bindinger}
-
-    Vi kan innføre midlertidige verdier i programmene våre ved å bruke nøkkelordet \texttt{let} og \texttt{in}:
-
-    \begin{lstlisting}
-        solveQuadratic a b c
-            = let discriminant = b*b - 4*a*c 
-                in ((-b + sqrt discriminant)/(2*a)
-                    , (-b - sqrt discriminant)/(2*a))
-    \end{lstlisting}
-
-    \subsubsection{Mønster matching}
-    Hva gjør denne funksjonen?
-    \begin{lstlisting}
-        ordpair :: (Ord a) => a -> a -> (a,a)
-        ordpair x y = if x <= y then (x, y) else (y, x)
-    \end{lstlisting}
-
-    Den plasserer det minste elementet i input i første index i tuplen som funksjonen returnerer.
-    \medskip
-
-    Hva gjør funksjonen \texttt{diff}
-
-    \begin{lstlisting}
-        diff x y = let (a, b) = ordpair x y
-            in (b - a)
-    \end{lstlisting}
-
-
-    \subsubsection{Flere let features}
-
-    Let uttrykk kan brukes
-    \begin{itemize}
-        \item til å definerer funksjoner
-        \item i \( do \)-notasjon
-    \end{itemize}
-
-
-    \subsection{Rekursjon}
-    Fra engelsk: "recursion" fra
-
-    \begin{itemize}
-        \item "recur" på norsk "å skje igjen" eller "gjentatt"
-    \end{itemize}
-
-    (egentlig fra latin "recurro", som betyr "å løpe tilbake"), men hva er det som "gjentas" eller skjer igjen?
-
-    \begin{definition}
-        En funksjon er rekursiv dersom den kaller seg selv igjen (muligens med nye parametere).
-    \end{definition}    
-    \newpage
+    \subsection{Dypere mønstermatching}
 
     \begin{eg}
-        Her er en av ukesoppgavene fra uke 1, skrevet rekursivt.
-        \begin{lstlisting}
-            triangle :: Integer -> Integer
-            triangle n = if n == 0
-                then 0
-                else n + (triangle (n - 1))
-        \end{lstlisting}
-    \end{eg}
+        Skriv en funksjon som sjekker om en typer er sortert.
 
-    \subsubsection{Oppsett}
-
-    Strukturen i en typisk rekursiv funksjon
-
-    \begin{itemize}
-        \item Grunntilfelle(r)
-        \item Rekursive tilfeller
-    \end{itemize}
-
-    \begin{eg}
-        Vi kan la mønstrene i argumentet bestemme grunntilfellet og rekursive tilfeller
+        \begin{enumerate}
+            \item Hva er typen til en slik funksjon?
+            \item Hva må funksjonen gjøre for å sjekke at en liste er sortert?
+            \item Hvis vi vil bruke rekursjon, hvilke mønster kan vi bruke?
+        \end{enumerate}
 
         \begin{lstlisting}
-            sum' :: [Integer] -> Integer
-            sum' [] = 0
-            sum' (x:xs) = x + sum' xs
+            sorted :: (ord a) => [a] -> Bool
         \end{lstlisting}
     \end{eg}
 
     \begin{eg}
-        Rekursive funskjoner er relativt enkle å bevise ting om
+        Vi kan også matche hvert enkelt element i listen, basert på typen
 
         \begin{lstlisting}
-            sum' [a,b,c] = a + b + c
+            filterEmpty:: [[a]] -> [[a]]
+            filterEmpty [] = []
+            filterEmpty ([]:xs) = xs
+            filterEmpty ([]:xs) = xs
+            filterEmpty (x:xs)
         \end{lstlisting}
     \end{eg}
 
-    \begin{proof}
-        Vi har at
-
-        \begin{lstlisting}
-            sum' [a,b,c]
-            = sum (a:b:c:[])
-            = a + sum'(b:c:[])
-            = a + b + sum'(c:[])
-            = a + b + c + sum' []
-            = a + b + c + 0
-            = a + b + c
-        \end{lstlisting}
-    \end{proof}
-
-    \subsection{Forskjellige typer rekursjon}
-    \begin{itemize}
-        \item Rekursjon på heltall
-        \item Rekursjon på lister (og senere datatyper)
-        \item Produktiv rekursjon
-        \item Generell rekursjon
-    \end{itemize}
-
-    \subsubsection{Rekursjon på heltall}
+    \subsection{Gjensidig rekursjon}
+    To funksjoner kan v1're definert i termer av hverandre:
 
     \begin{lstlisting}
-        countDown :: Integer -> [Integer]
-        countDown 0 = [0]
-        countDown x = x:(counDown (x - 1))
+        odds :: [a] -> [a]
+        odds [] = []
+        odds (x:xs) = evens xs
+
+        evens :: [a] -> [a]
+        evens [] = []
+        evens (x:xs) = x : odds xs
     \end{lstlisting}
 
-     \begin{itemize}
-         \item Oftests er 0 eller 1 grunntilfellet.
-         \item De rekursive kallene kaller funksjonen med et midnre parameter.
-     \end{itemize}
+    \subsection{Egendefinerte datatyper}
+    I haskell kan man innføre nye datatyper ved hjelp av nøkkelordet data:
 
-     OBS: Dette gir ofte partielle funksjoner.
+    \begin{lstlisting}
+        data CelestialObject = Star String Integer
+                             | Planet String String 
+                             | Moon String String 
+    \end{lstlisting}
 
-     \begin{itemize}
-         \item Hva skjer med funksjonen over hvis man gir negativ input?
-             \begin{itemize}
-                 \item Jo den vil kalle på seg selv i all evighet ettersom den aldri når grunntilfellet.
-             \end{itemize}
-         \item Hvordan burde vi ordne det slik at vi ikke får problemer med negative tall?
-             \begin{itemize}
-                 \item Enten ved å sjekke om tallet er negativt, og dersom det er det, legger vi til 1 istedenfor og trekke fra, eller så kan vi kalle funksjonen på absoluttverdien av \( x \).
-             \end{itemize}
-     \end{itemize}
+    Deklarasjonen består av
 
-     \subsection{Primitiv vs generell rekursjon (Ackermann)}
+    \begin{itemize}
+        \item Navn på datatypen: \texttt{CelestialObject}
+        \item Liste med konstruktører: \texttt{Star, Planet, Moon}
+        \item Argumenter til konstruktøren (data som lagres i elementene)
+    \end{itemize}
 
-     Men det finnnes veldig kompliserte ting man kan gj;re hvis man vil:
+    Når en datatyper er definert kan vi lage elementer i den:
 
-     \begin{lstlisting}
-         ackermann :: Integer -> Integer -> Integer
-         ackermann 0 n = n + 1
-         ackermann m 0 = ackermann (m - 1) 1
-         ackermann m n = ackermann (m - 1) (ackermann m (n - 1))
-     \end{lstlisting}
+    \begin{lstlisting}
+        solarSystem :: [CelestialObject]
+        solarSystem = [Star "The Sun" 4600000000,
+                       Planet "Mercury" "The Sun",
+                       Planet "Venus" "The Sun",
+                       Planet "Earth" "The Sun", Moon "The Moon" "Earth"
+                       Planet "Mars" "The Sun", Moon "Phobos" "Mars"
+                                              , Moon "Deimos" "Mars"]
 
-     Denne funksjonen vokser veldig fort! Men i teorien kommer den alltid frem til et svar.
+    \end{lstlisting}
 
-     \subsection{Rekursjon på lister og andre datastrukturer}
+    Vi kan også definere funksjoner ved hjelp av mønster
 
-     Vi har allerede sett et eksempel, la oss ta noen til
-
-     \begin{eg}
-         For å reversere en liste rekursivt
-
-         \begin{lstlisting}
-             reverse :: [a] -> [a]
-             reverse [] = []
-             reverse (a : as) = reverse as ++ [a]
-         \end{lstlisting}
-
-         \begin{itemize}
-             \item Gjør mønster matching på alle konstruktørene.
-             \item Det rekursive kallet gjøres direkte på variablene introdusert av mønsteret.
-         \end{itemize}
-     \end{eg}
-
-     \begin{eg}
-         For å definere zip
-
-         \begin{lstlisting}
-             
-         \end{lstlisting}
-     \end{eg}
-    
+    \begin{lstlisting}
+        displayInfo :: CelestialObject -> String
+        displayInfo (Star name age)
+        = "The star " ++ name ++ " is " ++ age ++ " years old."
+    \end{lstlisting}
 \end{document}
