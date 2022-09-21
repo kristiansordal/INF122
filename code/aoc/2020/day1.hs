@@ -1,20 +1,21 @@
-module Day1 where
-
-readInt :: String -> Int
-readInt = read
-
-twoSum :: Int -> [Int] -> [(Int, Int)]
-twoSum sum nums =
-  let ixs = zip [0 ..] nums
-   in ixs
-        >>= ( \(i, x) ->
-                ixs >>= \(j, y) -> [(i, j) | (x + y) == sum]
-            )
-
-main :: IO ()
 main =
   do
-    input <- readFile "inputday1.txt"
-    print . map readInt . words $ input
-    let nums = map readInt . words $ input
-    mapM_ print $ twoSum 2020 nums
+    file <- readFile "inputday1.txt"
+    let ls = lines file
+        numbers = map read ls :: [Integer]
+        oneNum = twoSum numbers
+    putStrLn $ "Part 1: " ++ show oneNum
+
+twoSum :: [Integer] -> Integer
+twoSum (x : xs) =
+  if sumAll x (x : xs) + x == 2020
+    then x * sumAll x (x : xs)
+    else twoSum xs
+twoSum _ = 0
+
+sumAll :: Integer -> [Integer] -> Integer
+sumAll n (x : xs) =
+  if n + x == 2020
+    then x
+    else sumAll n xs
+sumAll n _ = 0
