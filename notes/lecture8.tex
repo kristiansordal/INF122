@@ -1,0 +1,41 @@
+\documentclass{article}
+\input{preamble.tex}
+
+\begin{document}
+    \section{Forelesning 8}
+    \subsection{Plan for forelesningen}
+
+    \begin{itemize}
+        \item Fortsette med egendefinerte datatyper
+        \item Bruke datatyper til å modellere et domene
+        \item Trær
+    \end{itemize}
+
+    \subsection{Modellering}
+    Hvordan modellerer vi domenet vårt i Haskell?
+    \begin{itemize}
+        \item Vi lager nye datatyper som beskriver ting i domenet vårt
+        \item Vi lager funksjoner som lar oss manipulere tingene i domenet vårt
+    \end{itemize}
+
+    Hvordan vet vi at programmet vårt er korrekt mtp domenet?
+    \begin{itemize}
+        \item Sunnhet: Alle velltypede elementer i programmet vårt er gyldie ting i domenet vårt
+        \item Kompletthet: Alt vi vil modellere er typede elementer i programmet vårt.
+    \end{itemize}
+
+    Det er ikke enten eller, men heller en flytende overgang
+
+    \subsubsection{Invarianter}
+    Ofte må vi legge ekstra betingelser på elementene våre for å utelukke ugyldige elementer, verdier og tilstander. Disse egenskapene kalles \textit{invarianter}, fordi de bevares (varierer ikke) av operasjonene i programmet vårt.
+
+    \begin{eg}
+        I Obligen modellerer vi:
+
+        \begin{itemize}
+            \item Signaler: \texttt{ [Double]}
+            \item Filtere på signaler: \texttt{[Double] -> Double} 
+        \end{itemize}
+    \end{eg}
+
+\end{document}
