@@ -11,22 +11,22 @@ lpf :: (Fractional a) => Integer -> [a] -> a
 lpf n [] = 0
 lpf n xs = average $ take (fromIntegral n) xs
 
--- -- A simple high pass filter with adjustable cut-off
+-- A simple high pass filter with adjustable cut-off
 hpf :: (Floating a) => Integer -> [a] -> a
 hpf n [] = 0
-hpf n (x : xs) = x - lpf n xs
+hpf n (x : xs) = x - lpf n (x : xs)
 
--- -- Extend a finite signal with an infinite constant past
+-- Extend a finite signal with an infinite constant past
 extend :: Num a => [a] -> [a]
 extend [] = 0 : repeat 0
 extend [x] = repeat x
 extend (x : xs) = x : extend xs
 
--- -- Apply a filter to a list of values
+-- Apply a filter to a list of values
 applyFilter :: (Num a, Floating a) => ([a] -> a) -> [a] -> [a]
 applyFilter fil = map fil . iterate tail . extend
 
--- -- Count the number of zero-crossings in a signal represented by a list
+-- Count the number of zero-crossings in a signal represented by a list
 zeroCrossings :: (Num a, Ord a) => [a] -> Integer
 zeroCrossings [] = 0
 zeroCrossings [x] = 0

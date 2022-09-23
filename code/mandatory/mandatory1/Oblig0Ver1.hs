@@ -21,16 +21,50 @@ main = do
         applyFilter (hpf highPassCutoff) $
           applyFilter (lpf lowPassCutoff) $
             reverse summedData
-  -- Count the number of steps taken
-  let stepCount =
-        (`div` 2) $
-          zeroCrossings $
-            reverse $
-              take dataLength processedData
-  print stepCount
+  main
 
+-- pattern match for when list is empty, size 1, or size 2
+-- make function recursive so that we can have an accumulator (the list of inputs)
+-- isStep :: [(Double, Double, Double)] -> Bool
+-- isStep (x : y : ys) = (length (a : as) /= 1) || (a > 0 && as < 0 || a < 0 && as > 0)
+--   where
+--     (a : as) = applyFilter (hpf highPassCutoff) $ applyFilter (lpf lowPassCutoff) $ reverse $ map (\(a, b, c) -> a + b + c) (x : y)
+-- isStep [] = False
+-- isStep [x] = False
 
--- help function to recursively read input and print step 
-recursiveStep :: [Double] -> [String]
-recursiveStep (x : xs) =
-recursiveStep _ = 0
+printStep :: [Double] -> IO ()
+printStep [] = printStep []
+printStep [x] = printStep [x]
+printStep (x : y : ys) = do
+  input <- getLine
+  let dataPoints = read input :: (Double, Double, Double)
+  let summedData = (\(a, b, c) -> a + b + c) dataPoints
+  let (a : b : bs) = append summedData (x : y : ys)
+  if a > 0 && b < 0 || a < 0 && b > 0
+    then do
+      putStrLn "Step!"
+      hFlush stdout
+      printStep (b : bs)
+    else printStep (b : bs)
+
+append :: Double -> [Double] -> [Double]
+append n xs = xs ++ [n]
+
+-- stepRecursive :: [(Double, Double, Double)] -> IO String
+-- stepRecursive (x : y : ys) = do
+--   if isStep sum1 sum2
+--     then putStrLn "Step!"
+--     else stepRecursive (y : ys)
+--   where
+--     sum1 = applyFilter (hpf highPassCutoff) $ applyFilter (lpf lowPassCutoff) $ (\(a, b, c) -> a + b + c) $ x
+--     sum2 = applyFilter (hpf highPassCutoff) $ applyFilter (lpf lowPassCutoff) $ (\(a, b, c) -> a + b + c) $ y
+
+-- isStep :: Double -> Double -> Bool
+-- isStep x y
+--   | x > 0 && y < 0 = True
+--   | x < 0 && y > 0 = True
+--   | otherwise = False
+
+-- one function which takes in a triplet list of doubles
+-- then gets input, processes it
+--
