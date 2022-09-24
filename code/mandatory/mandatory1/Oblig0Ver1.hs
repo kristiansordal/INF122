@@ -10,6 +10,10 @@ import Oblig0Common
   )
 import System.IO
 
+-- get inputs with getcontents as it is lazy
+-- somehow read the input line by line by passing it to a function
+-- do every calculation in this function recursively
+
 main = do
   -- Read user data
   input <- getContents
@@ -23,48 +27,72 @@ main = do
             reverse summedData
   main
 
--- pattern match for when list is empty, size 1, or size 2
--- make function recursive so that we can have an accumulator (the list of inputs)
--- isStep :: [(Double, Double, Double)] -> Bool
--- isStep (x : y : ys) = (length (a : as) /= 1) || (a > 0 && as < 0 || a < 0 && as > 0)
---   where
---     (a : as) = applyFilter (hpf highPassCutoff) $ applyFilter (lpf lowPassCutoff) $ reverse $ map (\(a, b, c) -> a + b + c) (x : y)
--- isStep [] = False
--- isStep [x] = False
-
-printStep :: [Double] -> IO ()
-printStep [] = printStep []
-printStep [x] = printStep [x]
-printStep (x : y : ys) = do
-  input <- getLine
-  let dataPoints = read input :: (Double, Double, Double)
-  let summedData = (\(a, b, c) -> a + b + c) dataPoints
-  let (a : b : bs) = append summedData (x : y : ys)
-  if a > 0 && b < 0 || a < 0 && b > 0
+isStep :: [String] -> IO String
+isStep (x : xs) = do
+  let firstTriplet = read $ head (x : xs) :: (Double, Double, Double)
+  let secondTriplet = read $ head $ tail (x : xs) :: (Double, Double, Double)
+  let val1 = (\(a, b, c) -> a + b + c) firstTriplet
+  let val2 = (\(a, b, c) -> a + b + c) secondTriplet
+  let list = [val1, val2]
+  let processedData =
+        applyFilter (hpf highPassCutoff) $
+          applyFilter (lpf lowPassCutoff) $
+            reverse list
+  let dataLength = length list
+  let stepCount =
+        (`div` 2) $
+          zeroCrossings $
+            reverse $
+              take dataLength processedData
+  if stepCount >= 1
     then do
       putStrLn "Step!"
       hFlush stdout
-      printStep (b : bs)
-    else printStep (b : bs)
+      isStep $ drop 1 (x : xs)
+    else isStep $ drop 1 (x : xs)
+isStep _ = do
+  isStep ["1,1,1"]
 
-append :: Double -> [Double] -> [Double]
-append n xs = xs ++ [n]
+-- pattern match for when list is empty, size 1, or size 2
+-- make function recursive so that we can have an accumulator (the list of inputs)
+-- recursiveStep :: [(Double, Double, Double)] -> IO String
+-- recursiveStep [] = do
+--   input <- getLine
+--   let newInput = read input :: [(Double, Double, Double)]
+--   recursiveStep newInput
+-- recursiveStep [x] = do
+--   input <- getLine
+--   let newInput' = read input :: (Double, Double, Double)
+--   let newList = append newInput' [x]
+--   putStrLn "in [x]"
+--   hFlush stdout
+--   print $ show newList
+--   recursiveStep newList
+-- recursiveStep (x : y : ys) = do
+--   -- input <- getLine
+--   -- let newInput'' = read input :: (Double, Double, Double)
+--   -- let newList = append newInput'' (x : y : ys)
+--   let summedData = map (\(a, b, c) -> a + b + c) (x : y : ys)
+--   let dataLength = length summedData
+--   let processedData =
+--         applyFilter (hpf highPassCutoff) $
+--           applyFilter (lpf lowPassCutoff) $
+--             summedData
+--   let firstVal = head processedData
+--   print firstVal
+--   let secondVal = head (tail processedData)
+--   print secondVal
+--   if firstVal < 0 && secondVal > 0 || firstVal > 0 && secondVal < 0
+--     then do
+--       putStrLn "Step!"
+--       hFlush stdout
+--       recursiveStep (y : ys)
+--     else recursiveStep (y : ys)
 
--- stepRecursive :: [(Double, Double, Double)] -> IO String
--- stepRecursive (x : y : ys) = do
---   if isStep sum1 sum2
---     then putStrLn "Step!"
---     else stepRecursive (y : ys)
---   where
---     sum1 = applyFilter (hpf highPassCutoff) $ applyFilter (lpf lowPassCutoff) $ (\(a, b, c) -> a + b + c) $ x
---     sum2 = applyFilter (hpf highPassCutoff) $ applyFilter (lpf lowPassCutoff) $ (\(a, b, c) -> a + b + c) $ y
+-- -- recursiveStep (x : y : ys) = do
 
--- isStep :: Double -> Double -> Bool
--- isStep x y
---   | x > 0 && y < 0 = True
---   | x < 0 && y > 0 = True
---   | otherwise = False
+-- append :: (Double, Double, Double) -> [(Double, Double, Double)] -> [(Double, Double, Double)]
+-- append a [] = [a]
+-- append a xs = foldr (:) [a] xs
 
--- one function which takes in a triplet list of doubles
--- then gets input, processes it
---
+-- -- append a (x:xs) = x : append a xs

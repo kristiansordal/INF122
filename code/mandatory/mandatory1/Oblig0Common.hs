@@ -36,7 +36,11 @@ zeroCrossings (x : y : ys) =
     else zeroCrossings (y : ys)
 
 lowPassCutoff :: Integer
-lowPassCutoff = 188
+-- lowPassCutoff = 188
+
+lowPassCutoff = 5
 
 highPassCutoff :: Integer
-highPassCutoff = 27
+-- highPassCutoff = 27
+
+highPassCutoff = 8
