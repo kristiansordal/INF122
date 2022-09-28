@@ -38,9 +38,9 @@ zeroCrossings (x : y : ys) =
 lowPassCutoff :: Integer
 -- lowPassCutoff = 188
 
-lowPassCutoff = 5
+lowPassCutoff = 33
 
 highPassCutoff :: Integer
 -- highPassCutoff = 27
 
-highPassCutoff = 8
+highPassCutoff = 9

@@ -53,7 +53,21 @@ daysOf _ November = 30
 daysOf _ December = 31
 
 data Date = Date Year Month Integer
-  deriving (Eq, Show)
+  deriving (Eq)
+
+toOrdinal :: Integer -> String
+toOrdinal 1 = "1st"
+toOrdinal 2 = "2nd"
+toOrdinal 3 = "3rd"
+toOrdinal 21 = "21st"
+toOrdinal 22 = "22nd"
+toOrdinal 23 = "21rd"
+toOrdinal 31 = "31st"
+toOrdinal x = show x ++ "th"
+
+instance Show Date where
+  --show :: Date -> String
+  show (Date (Year y) m d) = toOrdinal d ++ " of " ++ show m ++ " " ++ show y
 
 isValidDate :: Year -> Month -> Integer -> Bool
 isValidDate y m d = 1 <= d && d <= daysOf y m

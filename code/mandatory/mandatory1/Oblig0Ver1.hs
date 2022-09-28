@@ -10,89 +10,65 @@ import Oblig0Common
   )
 import System.IO
 
--- get inputs with getcontents as it is lazy
--- somehow read the input line by line by passing it to a function
--- do every calculation in this function recursively
-
 main = do
-  -- Read user data
-  input <- getContents
-  -- Process data using filters
-  let datapoints = map read (lines input) :: [(Double, Double, Double)]
-  let summedData = map (\(a, b, c) -> a + b + c) datapoints
-  let dataLength = length summedData
-  let processedData =
-        applyFilter (hpf highPassCutoff) $
-          applyFilter (lpf lowPassCutoff) $
-            reverse summedData
-  main
+  isStep 0 []
 
-isStep :: [String] -> IO String
-isStep (x : xs) = do
-  let firstTriplet = read $ head (x : xs) :: (Double, Double, Double)
-  let secondTriplet = read $ head $ tail (x : xs) :: (Double, Double, Double)
-  let val1 = (\(a, b, c) -> a + b + c) firstTriplet
-  let val2 = (\(a, b, c) -> a + b + c) secondTriplet
-  let list = [val1, val2]
+-- all calculations are done in this method
+isStep :: Integer -> [Double] -> IO ()
+-- pattern match on the first two values, as we need as a minimum two values to
+-- do any calculations
+isStep 0 [] = do
+  -- we use getline as it reads the file line by line, even in recursive calls
+  line <- getLine
+
+  -- process the line as a sum of the triplet
+  let rawLine = read line :: (Double, Double, Double)
+  let summedLine = (\(a, b, c) -> a + b + c) rawLine
+  isStep 0 [summedLine]
+
+-- same method for this match
+isStep 0 [x] = do
+  line <- getLine
+  let rawLine = read line :: (Double, Double, Double)
+  let summedLine = (\(a, b, c) -> a + b + c) rawLine
+  -- pass the first two values as a list
+  isStep 0 (summedLine : [x])
+
+-- same method for getting and processing the next value
+isStep x input = do
+  line <- getLine
+  let rawLine = read line :: (Double, Double, Double)
+  let summedLine = (\(a, b, c) -> a + b + c) rawLine
+  -- prepend the new value to the list
+  let list = summedLine : input
+
+  let dataLength = length list
+  -- applies the filter to the list so far, it is important to use the entire list
+  -- and not only the two values we care about as the lpf function takes the average of
+  -- the entire list
   let processedData =
         applyFilter (hpf highPassCutoff) $
-          applyFilter (lpf lowPassCutoff) $
-            reverse list
-  let dataLength = length list
+          applyFilter
+            (lpf lowPassCutoff)
+            list
+
+  -- stepCount will either be 1 or 0, because we only look at two values, therefore we do not
+  -- divide this value by two
   let stepCount =
-        (`div` 2) $
-          zeroCrossings $
-            reverse $
-              take dataLength processedData
+        zeroCrossings $
+          take 2 processedData
+
   if stepCount >= 1
     then do
-      putStrLn "Step!"
-      hFlush stdout
-      isStep $ drop 1 (x : xs)
-    else isStep $ drop 1 (x : xs)
-isStep _ = do
-  isStep ["1,1,1"]
-
--- pattern match for when list is empty, size 1, or size 2
--- make function recursive so that we can have an accumulator (the list of inputs)
--- recursiveStep :: [(Double, Double, Double)] -> IO String
--- recursiveStep [] = do
---   input <- getLine
---   let newInput = read input :: [(Double, Double, Double)]
---   recursiveStep newInput
--- recursiveStep [x] = do
---   input <- getLine
---   let newInput' = read input :: (Double, Double, Double)
---   let newList = append newInput' [x]
---   putStrLn "in [x]"
---   hFlush stdout
---   print $ show newList
---   recursiveStep newList
--- recursiveStep (x : y : ys) = do
---   -- input <- getLine
---   -- let newInput'' = read input :: (Double, Double, Double)
---   -- let newList = append newInput'' (x : y : ys)
---   let summedData = map (\(a, b, c) -> a + b + c) (x : y : ys)
---   let dataLength = length summedData
---   let processedData =
---         applyFilter (hpf highPassCutoff) $
---           applyFilter (lpf lowPassCutoff) $
---             summedData
---   let firstVal = head processedData
---   print firstVal
---   let secondVal = head (tail processedData)
---   print secondVal
---   if firstVal < 0 && secondVal > 0 || firstVal > 0 && secondVal < 0
---     then do
---       putStrLn "Step!"
---       hFlush stdout
---       recursiveStep (y : ys)
---     else recursiveStep (y : ys)
-
--- -- recursiveStep (x : y : ys) = do
-
--- append :: (Double, Double, Double) -> [(Double, Double, Double)] -> [(Double, Double, Double)]
--- append a [] = [a]
--- append a xs = foldr (:) [a] xs
-
--- -- append a (x:xs) = x : append a xs
+      -- as we do not divide stepCount by two, we have to ensure that we only print step half the time
+      -- this is because a step is defined by the period, which is defined by the crossing of the x-axis
+      -- twice
+      if even x
+        then do
+          putStrLn "Step!"
+          hFlush stdout
+          isStep (x + 1) list
+        else do
+          isStep (x + 1) list
+    else do
+      isStep x list

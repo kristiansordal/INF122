@@ -1,0 +1,81 @@
+\documentclass{article}
+\input{preamble.tex}
+
+\begin{document}
+    \section{Forelesning 9}
+
+    \subsection{Typeklasser}
+    Typeklassene ligner på "interface" i Java. Typeklasser er mer fleksible:
+
+    \begin{itemize}
+        \item Et Java interface må defineres før klassen.
+        \item En typeklasse kan defineres når som helst.
+    \end{itemize}
+
+    \begin{idea}
+        Noen funknsjoner fungerer for alle typer (polymorfe), men noen fungerer bare på typer med en viss struktur. For eksempel likhet, rodning, eller \( + \) og \( - \).
+    \end{idea}
+
+    En typeklasse bestemmer typen til en liste med funksjoner. En hver type som kører til typeklassen skriver in egen implementasjon.
+
+    \begin{eg}
+        Klassen \texttt{Eq} er den enkleste innebygde klassen:
+
+        \begin{lstlisting}
+        class Eq aa where
+            (==) :: a -> a -> Bool 
+        \end{lstlisting}
+
+    For eksempel Bool:
+
+    \begin{lstlisting}
+    data Bool = True | False
+
+    instance Eq Bool where
+        instance Eq Bool where        
+        True == True = True
+        False == False = True
+        _ == _ = False
+    \end{lstlisting}    
+
+    For eksempel for lister:
+
+    \begin{lstlisting}
+    instance (Eq a) => Eq [a] where
+    [] == [] = True
+    (a:as) == (b:bs) = (a == b) && (as == bs)
+    _ == _ = False
+    \end{lstlisting}
+    \end{eg}
+
+    \begin{eg}
+        Eksempel på rotering av lister
+        \begin{lstlisting}
+        class Rotateable a where 
+            rotateLeft :: a -> a
+            rotateRight :: a -> a
+
+        instance Rotateable [b] where
+            rotateLeft [] = []
+            rotateLeft (a:as) = as ++ [a]
+            rotateLeft [] = []
+            rotateLeft as = last as : init as 
+        \end{lstlisting}
+    \end{eg}
+
+    \subsection{Binære søkretrær}
+
+    \subsubsection{Antagelse}
+    Vi antar at vi jobber med en type som implementerer Ord typen. (F. eks heltall, eller strenger)
+    \subsubsection{Basis ide}
+    Binære søketrær er basert på samme ide som QuickSort: Hvis vi har et element \( x \) kan vi dele opp en hver mengde i tre deler:
+
+    \begin{itemize}
+        \item De som er mindre enn \( x \) (til venstre)
+        \item Elementet \( x \) selv (i midten)
+        \item De som er større enn \( x \) (til høyre)
+    \end{itemize}
+
+
+
+\end{document}
