@@ -85,8 +85,15 @@ solarSystem =
         ]
     }
 
-numberOfMoons :: PlanetarySystem -> Integer
-numberOfMoons planets = sum (fmap $ length planets)
+-- numMoon :: [Moon] -> Integer
+-- numMoon (x : xs) = fromIntegral (length (x : xs))
+-- numMoon x = 1
 
-toString :: PlanetarySystem -> String
-toString = sunName
+numMoons :: Planet -> Integer
+numMoons Planet {moons = m} = fromIntegral (length m)
+
+numberOfMoons :: PlanetarySystem -> Integer
+numberOfMoons PlanetarySystem {planets = p} = sum $ map numMoons p
+
+atLeastOneMoon :: PlanetarySystem -> [Planet]
+atLeastOneMoon PlanetarySystem {planets = p} = [x | x <- p, numMoons x > 0]
