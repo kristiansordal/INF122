@@ -85,10 +85,6 @@ solarSystem =
         ]
     }
 
--- numMoon :: [Moon] -> Integer
--- numMoon (x : xs) = fromIntegral (length (x : xs))
--- numMoon x = 1
-
 numMoons :: Planet -> Integer
 numMoons Planet {moons = m} = fromIntegral (length m)
 

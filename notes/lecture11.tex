@@ -1,0 +1,66 @@
+\documentclass{article}
+\input{preamble.tex}
+
+\begin{document}
+    \section{Forelesning 11}
+
+    \subsection{Plan for forelesningen}
+    \begin{itemize}
+        \item Insert for AVL Trær
+        \item Set og Map
+        \item Syntakstrær
+    \end{itemize}
+
+    \subsection{Insert i AVL trær}
+    Etter insert kan følgende skje
+    \begin{itemize}
+        \item Treet blir mer balansert
+            \begin{itemize}
+            \item \texttt{Left / RightHeavy -> Balanced}
+            \end{itemize}
+        \item Treet blir mindre balansert, men fortsatt tilfredstiller invarianten.
+            \begin{itemize}
+                \item \texttt{Balanced -> Left / RightHeavy}
+            \end{itemize}
+        \item Treet blir for ubalansert og trenger rotasjon
+    \end{itemize}
+De to første tilfellene er lette å håndtere. Det siste tilfellet deler seg
+igjen opp i flere tilfeller som må ordnes separat.
+
+\subsubsection{Rebalansering ved rotasjon}
+Rebalanseringen er symmetrisk i høyre / venstre tilfeller
+Hvis treet var LeftHeavy og venstre subtre har vikst i høyden etter insert, må vi rotere
+\begin{itemize}
+    \item Hvis venstre subtre er LeftHeavy etter insert kan vi gjøre en enkel rotasjon
+    \item Hvis venstre subtre er RightHeavy etter insert må vi gjøre dobbelrotasjon.
+\end{itemize}
+
+Kan venstre subtre være Balanced etter insert (gitt at det har vokst)?
+
+\subsection{Syntaks og semantikk}
+Syntaks er hvordan vi uttrykker tenkte objekter
+\begin{itemize}
+    \item 3
+    \item \( 2 \cdot 3 - 3 \cdot  3 \)
+    \item Idag
+    \item 29. september 2022
+    \item En verdi i haskell
+\end{itemize}
+
+Semantikk er å tilordne betydelse til syntaksen
+
+\begin{eg}
+    Vi tilordner "3" samme betydelse som "\( 2 \cdot 6 - 3 \cdot 3 \)".
+\end{eg}
+
+Et syntakstre er et trestruktur som representerer et syntaktisk uttrykk.
+
+\begin{eg}
+    Syntakstreet til \( 3 \cdot  4 _{ 1 \cdot  2 - 3x} \) er som følger
+
+    \begin{figure}[H]
+	\centering
+	\incfig{syntaxtree}
+\end{figure}
+\end{eg}
+\end{document}
