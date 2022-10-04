@@ -4,11 +4,18 @@ main =
   do
     file <- readFile "inputday3.txt"
     let list = map (digits . (read :: String -> Integer)) (transpose $ lines file)
+        list2 = map (digits . (read :: String -> Integer)) (lines file)
         gamma = gammaRate list
         epsilon = epsilonRate gamma
         ans = binToDec gamma * binToDec epsilon
 
     putStrLn $ "Part 1: " ++ show ans
+
+oxygenRating :: [[Integer]] -> [Integer] -> [Integer]
+-- oxygenRating ((x : xs) : xss) (y : ys) =
+--   filter (x y) ((x : xs) : xss)
+oxygenRating ((x : xs) : xss) (y : ys) = map $ filter (x /= y) (xss)
+oxygenRating _ _ = []
 
 gammaRate :: [[Integer]] -> [Integer]
 gammaRate [[]] = []

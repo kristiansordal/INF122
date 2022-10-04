@@ -9,6 +9,8 @@ lenEven = even . length
 
 getFirstHalf = take . (`div` 2) =<< length
 
+getFirstHalf' = length >>= take . (`div` 2)
+
 getMiddle :: String -> Char
 getMiddle x = x !! max 0 (length x `div` 2)
 

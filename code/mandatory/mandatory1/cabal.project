@@ -1,0 +1,8 @@
+packages: .
+
+-- NOTE: This might not work on OSX. If it fails somehow, it might be worth trying
+-- to remove lines 9-14. If it still doesn't work (because GLUT crashes ghci),
+-- maybe uncommenting line 7 will help.
+
+constraints: gloss +GLFW -GLUT
+
