@@ -9,7 +9,7 @@ lenEven = even . length
 
 getFirstHalf = take . (`div` 2) =<< length
 
-getFirstHalf' = length >>= take . (`div` 2)
+-- getFirstHalf' = length >>= take . (`div` 2)
 
 getMiddle :: String -> Char
 getMiddle x = x !! max 0 (length x `div` 2)
@@ -26,3 +26,5 @@ palindrome x
 toString :: Palindrome -> String
 toString (EvenLen n) = n ++ reverse n
 toString (OddLen n c) = n ++ [c] ++ reverse n
+
+-- | lenEven x -> Just (EvenLen (getFirstHalf x))
