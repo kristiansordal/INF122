@@ -10,7 +10,9 @@ getMiddle a = a !! (length a `div` 2) + 1
 
 palindrome a =
   if isPalindrome a then
-    (if length a `mod` 2 == 0 then Just (Palindromeeven (take length a `div` 2))
+    (if length a `mod` 2 == 0 then Just (Palindromeeven (take length a `div` 2)
+    )
+  
 
 
 isPalindrome :: String -> Bool
