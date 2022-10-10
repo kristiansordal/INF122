@@ -11,11 +11,11 @@ main =
 
     putStrLn $ "Part 1: " ++ show ans
 
-oxygenRating :: [[Integer]] -> [Integer] -> [Integer]
--- oxygenRating ((x : xs) : xss) (y : ys) =
---   filter (x y) ((x : xs) : xss)
-oxygenRating ((x : xs) : xss) (y : ys) = map $ filter (x /= y) (xss)
-oxygenRating _ _ = []
+-- oxygenRating :: [[Integer]] -> [Integer] -> [Integer]
+-- -- oxygenRating ((x : xs) : xss) (y : ys) =
+-- --   filter (x y) ((x : xs) : xss)
+-- oxygenRating ((x : xs) : xss) (y : ys) = map $ filter (x /= y) (xss)
+-- oxygenRating _ _ = []
 
 gammaRate :: [[Integer]] -> [Integer]
 gammaRate [[]] = []
