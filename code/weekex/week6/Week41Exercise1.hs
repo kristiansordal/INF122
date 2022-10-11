@@ -2,6 +2,7 @@ module Week41Exercise1 where
 
 import Data.Map (Map)
 import qualified Data.Map as Map
+import Data.Maybe
 import Data.Set (Set)
 import qualified Data.Set as Set
 
@@ -10,14 +11,18 @@ type Graph n = Map n (Set n)
 disjoint :: (Ord a) => Set a -> Set a -> Bool
 disjoint n1 n2 = null (n1 `Set.intersection` n2)
 
-hasCycle :: (Ord n) => Graph n -> n -> Bool
-hasCycle g node =
-  if disjoint visited any neighbours
-    then hasCycle g node
-    else True
-  where
-    neighbours = Map.lookup node g
-    visited = visitedNodes neighbours (Set.singleton node)
+hasCycle :: (Ord node) => Graph node -> node -> Bool
+hasCycle g start = path g start (Set.singleton start)
 
-visitedNodes :: (Ord a) => a -> Set a -> Set a
-visitedNodes = Set.insert
+path :: (Ord n) => Graph n -> n -> Set n -> Bool
+path g start visited
+  | isNothing $ Map.lookup start g = False
+  | otherwise =
+    case Map.lookup start g of
+      Just neighbors ->
+        not (disjoint visited neighbors)
+          || ( do
+                 let visited' = Set.insert start visited
+                 any (\n -> path g n visited') neighbors
+             )
+      _ -> False
