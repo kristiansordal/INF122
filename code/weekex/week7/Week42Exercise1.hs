@@ -10,7 +10,8 @@ either' f _ (Left x) = f x
 either' _ f (Right y) = f y
 
 toFstAndSnd :: (a -> (b, c)) -> (a -> b, a -> c)
-toFstAndSnd f = ()
+-- toFstAndSnd f a = (fst $ f a, snd $ f a)
+toFstAndSnd f a = f ((fst a), (fst a))
 
--- pair :: (a -> b) -> (a -> c) -> a -> (b, c)
--- pair x y z = (x, y)
+pair :: (a -> b) -> (a -> c) -> (a -> (b, c))
+pair f g a = (f a, g a)

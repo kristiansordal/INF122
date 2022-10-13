@@ -1,0 +1,150 @@
+\documentclass{article}
+\input{preamble.tex}
+
+\begin{document}
+    \section{Forelesning 13}
+
+    \subsection{Plan for forelesningen}
+    \begin{itemize}
+        \item \texttt{foldr, foldl, og foldl'}
+        \item Eliminatorer
+        \item Punktfri notasjon
+    \end{itemize}
+
+    \subsection{Fold funksjonen}
+    \subsubsection{foldr}
+
+    \begin{lstlisting}
+    foldr :: (a -> b -> b) -> b -> [a] -> b
+    foldr f z [] = z
+    foldr f z (a:as) = f a (foldr f z as)
+    \end{lstlisting}
+
+    \begin{eg}
+        \textbf{Sum via foldr}
+
+        \[ \texttt{sum = foldr (+) 0} \]
+
+        \begin{itemize}
+            \item 0 blir lagt til sist.
+            \item Vi må vente til hele listen er brettet ut før vi kan begynne å summere.
+        \end{itemize}
+        \begin{lstlisting}
+        sum [1,2,3] = (foldr (+) 0 1:2:3:[]) 
+                     = 1 + (foldr (+) 0 (2:3:[])) 
+                     = 1 + (2 + foldr (+) 0 (3:[])) 
+                     = 1 + (2 + (3 + foldr (+) 0 []))
+                     = 1 + (2 + (3 + 0))
+        \end{lstlisting}
+    \end{eg}
+
+     \begin{ex}
+         Definer følgende funksjoner ved hjelp av \texttt{foldr}
+         
+         \begin{lstlisting}
+         factorial :: (Num a) => a -> a
+         head' :: [a] -> Maybe a
+         \end{lstlisting}
+     \end{ex}
+
+     \subsection{foldl}
+     \begin{lstlisting}
+     foldl :: (b -> a -> b) -> b -> [a] -> b
+     foldl f z [] = z
+     foldl f z (a:as) = foldl f (f z a) as
+     \end{lstlisting}
+
+     \begin{eg}
+         \textbf{Sum via foldl}
+         \[ \texttt{sum = foldl (+) 0}\]
+
+        \begin{lstlisting}
+        sum [1,2,3] = foldl (+) 0 (1:2:3:[]) 
+                     = foldl (+) (0+1) (2:3:[])
+                     = foldl (+) ((0+1)+2) (3:[])
+                     = foldl (+) (((0+1)+2)+3) []
+                     = (((0+1)+2)+3)
+                     = 6
+        \end{lstlisting}
+     \end{eg}
+
+     \begin{itemize}
+         \item 0 kommer nå først
+         \item Vi kunne begynt å regne ut summen før vi kom til siste linje (tail call recursion)
+     \end{itemize}
+
+     MEN: haskell er lazy, og regner derfor ikke ut denne mens vi går
+
+     \subsection{Stack Overflow}
+
+     Med både foldl og foldr er det fare for stack overflow
+
+     \begin{lstlisting}
+     foldr (+) 0 [1 .. 10000000000]   
+     foldl (+) 0 [1 .. 10000000000]   
+     foldr' (+) 0 [1 .. 10000000000]   
+     \end{lstlisting}
+
+     \subsection{Eliminatorer}
+     \subsubsection{Foldr er spesiell}
+     En hver vellfundert rekursjon på lister kan erstattes med \texttt{foldr}
+
+     \begin{eg}
+         \textbf{Map via foldr}
+         \begin{lstlisting}
+         map :: (a -> b) -> [a] -> [b] 
+         map _ [] = []
+         map f (a:as) =  f a : map f as
+         \end{lstlisting}
+
+         Kunne vært
+
+         \begin{lstlisting}
+         map :: (a -> b) -> [a] -> [b] 
+         map :: f = foldr (\a b -> f a : b) []
+         \end{lstlisting}
+     \end{eg}
+
+     En slik funksjon som fanger opp vellfundert rekursjon kalles en \textbf{eliminator}.
+
+     Andre datatyper har egne eliminatorer.
+
+     \begin{eg}
+        Lister har:
+
+        \[ \texttt{foldr :: (a -> b -> b) -> b -> [a] -> b}\]
+
+        Maybe har:
+
+        \[ \texttt{maybe :: b -> (a -> b) -> Maybe a -> b}  \]
+
+        Either har
+
+        \[ \texttt{either :: (a -> c) -> (b -> c) -> Either a b -> c} \]
+     \end{eg}
+
+     \subsection{Punktfri notasjon}
+
+     Det er ikke alltid nødvendig å skrive ut argumentene:
+
+     \[ \texttt{applyFilter fil signal = map fil (iterate tail (extend signal))} \]
+
+     kan skrives som
+
+     \[ \texttt{applyfilter fil = map fil . iterate tail . extend} \]
+     \subsection{Unødvendige lambdaer}
+
+     Spesielt nyttig når man lager en funksjon ved hjelp av høyereordens funksjoner
+
+     \begin{lstlisting}
+      lessThan3 :: [Integer] -> [Integer]   
+      lessThan3 list = filter (\a -> a < 3) list
+     \end{lstlisting}
+
+     kunne vært skrevet
+
+     \begin{lstlisting}
+      lessThan3 :: [Integer] -> [Integer]   
+      lessThan3 list = filter (<3) list
+     \end{lstlisting}
+\end{document}
