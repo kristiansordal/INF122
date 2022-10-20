@@ -1,0 +1,92 @@
+\documentclass{article}
+\input{preamble.tex}
+
+\begin{document}
+    \section{Forelesning 14}
+
+    \subsection{Kinds}
+    Kinds er en slags "typer for typer of typekonstruksjoner"
+
+    \begin{itemize}
+        \item Vanlige typer er av king *.
+        \item Maybe of Set har typeargument: \texttt{kind * -> *}
+        \item Map har to typeargument (key og value): \texttt{* -> * -> *}
+    \end{itemize}
+
+    Det finnes også høyere ordens kinds, f. eks
+
+    \begin{center}
+        \texttt{data Fix f = Fix (f (Fix f))}
+    \end{center}
+
+    \subsection{Typeklasser}
+    \subsubsection{Hva er en typeklasse}    
+
+    \begin{lstlisting}
+    class (Bar t) => Foo t where
+        foo :: t -> Maybe t
+        xyzzy :: t -> Integer
+        bar :: [t] -> String -> t
+
+    -- Law for Foo class:
+    -- For all ts and str:
+    -- xyzzy (bar ts str) == fromIntegral length ts
+    \end{lstlisting}
+
+    En typeklasse har:
+    \begin{itemize}
+        \item Et navn (Foo) 
+        \item Instansvariabler (t)
+        \item Forkrav (Bar t)
+        \item Spesifikasjon av funksjoner
+        \item Uformelt: Lover som alle instanser bør oppfylle
+    \end{itemize}
+
+    \subsubsection{map for Maybe?}  
+
+    \begin{lstlisting}
+    addThreeMaybe :: (Num a) => Maybe a -> Maybe a
+    addThreeMaybe Nothing = Nothing
+    addThreeMaybe (Just a) = Just (a+3)
+    \end{lstlisting}
+
+    Skriv om \texttt{addThreeMaybe} til å bruke \texttt{maybe} funksjonen istedetfor pattern matching:
+
+    \begin{lstlisting}
+    maybe :: b -> (a -> b) -> Maybe a -> b 
+    \end{lstlisting}
+
+    Hva skal typene \texttt{a} og \texttt{b} være for \texttt{addThreeMaybe}?
+
+    \begin{lstlisting}
+    addThreeMaybe = maybe Nothing (\a -> Just(a + 3))   
+    \end{lstlisting}
+
+    \subsubsection{Functor}
+    \begin{lstlisting}
+    class Functor f where 
+        fmap :: (a -> b) -> f a -> f b 
+    \end{lstlisting}
+
+    Merk at \texttt{f} har kind \texttt{* -> *}
+
+    \subsubsection{Funktorlovene}
+    Instanser av \texttt{Functor} klassen forventes å oppfylle disse to lovene:
+
+    \begin{lstlisting}
+    fmap (f . g) == fmap f . fmap g
+    fmap id == id
+    \end{lstlisting}
+
+    Disse følger fra intuisjonen fra tidligere.
+    La oss sjekke at de holder hvis vi implementerer \texttt{fmap} for \texttt{Maybe}!
+
+    \begin{eg}
+        Either
+        \medskip
+
+    \end{eg}
+
+
+
+\end{document}
