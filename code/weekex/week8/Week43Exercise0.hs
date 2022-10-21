@@ -1,5 +1,3 @@
-{-# LANGUAGE InstanceSigs #-}
-
 module Week43Exercise0 where
 
 data BinSearchTree a
@@ -8,7 +6,6 @@ data BinSearchTree a
   deriving (Eq, Show)
 
 instance Foldable BinSearchTree where
-  foldr :: (a -> b -> b) -> b -> BinSearchTree a -> b
   foldr _ z Empty = z
   foldr f z (Branch left node right) = foldr f (f node $ foldr f z right) left
 
