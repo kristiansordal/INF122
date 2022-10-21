@@ -20,7 +20,7 @@ type MyGraph = (Map Integer (Set Integer))
 instance IntegerGraph MyGraph where
   emptyGraph = Map.empty
   insertEdge n1 n2 = Map.insertWith Set.union n2 Set.empty . Map.insertWith Set.union n1 (Set.singleton n2)
-  insertNode n g = Map.insertWith Set.union n Set.empty g
+  insertNode n = Map.insertWith Set.union n Set.empty
   nodeInGraph n = Map.member n
   edgeInGraph n1 n2 g =
     case Map.lookup n1 g of
