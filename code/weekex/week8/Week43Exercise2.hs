@@ -15,7 +15,7 @@ class IntegerGraph g where
   nodeInGraph :: Integer -> g -> Bool
   edgeInGraph :: Integer -> Integer -> g -> Bool
 
-type MyGraph = (Map Integer (Set Integer))
+type MyGraph = Map Integer (Set Integer)
 
 instance IntegerGraph MyGraph where
   emptyGraph = Map.empty
