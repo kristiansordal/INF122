@@ -31,6 +31,8 @@ nextDistribution model current =
     Just map -> map
     Nothing -> Nothing
 
+-- finne ngram
+-- bruke tolist p[ fst]
 -- Data.Maybe.fromMaybe Nothing Map.toList (Map.lookup current model)
 
 createModel :: Integer -> String -> TextModel
