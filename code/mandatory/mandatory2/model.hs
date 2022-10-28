@@ -28,11 +28,14 @@ increaseWeight ngram next = Map.insertWith (\(m1, t1) (m2, t2) -> (Map.unionWith
 nextDistribution :: TextModel -> NGram -> Maybe ([(NGram, Weight)], Weight)
 nextDistribution model current =
   case Map.lookup current model of
-    Just map -> map
+    Just map -> Map.toList (fst map) model
     Nothing -> Nothing
 
+-- where
+--   list = Map.toList map current
+
 -- finne ngram
--- bruke tolist p[ fst]
+-- bruke tolist på fst
 -- Data.Maybe.fromMaybe Nothing Map.toList (Map.lookup current model)
 
 createModel :: Integer -> String -> TextModel
