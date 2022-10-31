@@ -9,7 +9,7 @@ import Control.Arrow
 import Control.Monad
 import Data.List
 import Data.Map (Map)
-import qualified Data.Map as Map
+import Data.Map qualified as Map
 import Data.Maybe
 import NGram
 
@@ -28,15 +28,8 @@ increaseWeight ngram next = Map.insertWith (\(m1, t1) (m2, t2) -> (Map.unionWith
 nextDistribution :: TextModel -> NGram -> Maybe ([(NGram, Weight)], Weight)
 nextDistribution model current =
   case Map.lookup current model of
-    Just map -> Map.toList (fst map) model
+    Just (n, weight) -> Just (map (\(x, y) -> (updateGram current x, y)) (Map.toList n), weight)
     Nothing -> Nothing
-
--- where
---   list = Map.toList map current
-
--- finne ngram
--- bruke tolist på fst
--- Data.Maybe.fromMaybe Nothing Map.toList (Map.lookup current model)
 
 createModel :: Integer -> String -> TextModel
 createModel n = foldl' (flip $ uncurry increaseWeight) emptyModel . gramsWithNext n

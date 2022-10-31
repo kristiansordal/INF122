@@ -1,0 +1,101 @@
+\documentclass{article}
+\input{preamble.tex}
+
+\begin{document}
+    \section{Forelesning 17}
+
+    \subsection{Pakke og byggesystemer}
+    Problem:
+
+    \begin{itemize}
+        \item Kompilatoren kompilerer programmet
+        \item Hvert program kan avhenge av flere biblioteker
+        \item For at programmet skal kompilere må alle bibliotekene som det avhenger av lastes ned og kompileres først.
+    \end{itemize}
+
+    Å gjøre denne nedlastingen og kompileringen manuelt er mye arbeid. Et pakke- og byggesystem forsøker å løse dette.
+
+    \subsubsection{Hva er et programbyggesystem?}
+    Vanlig ontoligi for et pakke- og bygge system
+
+    \textbf{Pakke:} En helhetlig samling med kildekodefiler som kompileres til et eller flere programmer/bibliotek
+\medskip
+
+\textbf{Bygge en pakke: } Kompilere kildekoden og sette sammen programmene/bibliotekent.
+
+
+\subsubsection{Pakkeversjoner}
+Programvare er i stadig utvikling. Derfor kommer pakker i ulike versjoner
+
+\begin{itemize}
+    \item Noen ganger er pakke B bare kompatibel med noen versjoner av pakke A.
+\end{itemize}
+
+Et pakkesystem må sørge for at det ikke blir konflik når ulike pakker krever ulike versjoner av en avhengighet.
+
+\subsubsection{Eksempler på pakke- og byggesystemer}
+
+Språktilknuttede:
+
+\begin{itemize}
+    \item Maven (java)
+    \item Pip (Python)
+    \item Cabal (Haskell)
+    \item npm (JavaScript)
+\end{itemize}
+
+Operativsystemtilknyttede:
+
+\begin{itemize}
+    \item Make (*nix, språkdiagnostisk)
+    \item Ports, portage, nix
+    \item Homebrew (MacOS)
+\end{itemize}
+
+
+\subsubsection{Cabal}
+Cabal er et pakke- og byggesystem for Haskellprogrammer
+
+\begin{itemize}
+    \item En pakke beskrives av en \texttt{.cabal} fil.
+    \item Hackage er et sentralt nettsted for offentlige pakker
+\end{itemize}
+
+\subsubsection{Cabal Hell}
+Cabal har alltid hatt god støtte for å spesifisere hvilke pakker som er kompatible med programmet.
+\begin{itemize}
+    \item Tidligere var det kun mulig å ha en versjon av en pakke installert.
+    \item Det var veldig lett å havne i en situasjon hvor pakker var i konflikt med hverandre.
+\end{itemize}
+
+\subsubsection{Stack}
+Stack er et alternativt system til cabal-install
+
+\begin{itemize}
+    \item Bruker cabal-biblioteket.
+    \item Har et annet sentralt pakkeoppsamlingssted
+    \item Har en annen strategi for å løse "cabal hell"
+    \item Tar også ansvar for GHC installasjonen
+\end{itemize}
+
+Stack har et begrep om \textit{snapshot}; en konsistent samling pakker som ikke er i konflikt, sammen med en spesifikk GHC versjon.
+
+\subsection{Testing}
+Det finnes mange former for testing:
+\begin{itemize}
+    \item Unit testing
+    \item End-toend testing
+    \item Statisk / dynamisk testing
+    \item Integrasjonstesting, systemtesting
+\end{itemize}
+
+QuickCheck er et verkt;y for property testing.
+
+\subsubsection{Egenskapstesting}
+I property testing så tester man at funksjoner har gitte egenskaper
+\begin{itemize}
+    \item Hver egenskap er en funksjon
+    \item Funksjonen tar argumenter og tester om en gitt egenskap holder (Boolsk verdi)
+    \item Testene kjøres på tilfeldig generert data
+\end{itemize}
+\end{document}

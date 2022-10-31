@@ -1,8 +1,8 @@
-import qualified Codec.Compression.GZip as GZip
-import qualified Data.ByteString.Lazy as ByteString
-import qualified Data.ByteString.Lazy.UTF8 as UTF8
+import Codec.Compression.GZip qualified as GZip
+import Data.ByteString.Lazy qualified as ByteString
+import Data.ByteString.Lazy.UTF8 qualified as UTF8
 import Data.List
-import qualified Data.Map as Map
+import Data.Map qualified as Map
 import Model
 import NGram
 import System.Environment
@@ -35,58 +35,71 @@ gramLen = 7
 -- going through the list until a certain treshold has been
 -- reached.
 pick :: [(a, Weight)] -> Weight -> a
-pick weights treshold = _
+pick weights treshold
+  | snd (head weights) <= fromIntegral treshold = pick (tail weights) (snd (head weights))
+  | otherwise = fst $ head weights
 
 -- Pick a random element from a weighted list with a given
 -- total weight.
 pickRandom :: [(a, Weight)] -> Weight -> IO a
-pickRandom wl total = _
+pickRandom wl total =
+  do
+    rand <- randomRIO (0, total - 1)
+    return $ pick wl rand
 
 -- Generate a fixed amount of text from a model starting from a given
 -- start string
-generate :: TextModel -> String -> Integer -> IO String
-generate model start amount = _
+-- generate :: TextModel -> String -> Integer -> IO String
+-- generate model start amount = _
 
 -- Helper function which generates n-grams from a model
 generate' :: TextModel -> NGram -> Integer -> IO [NGram]
-generate' model start amount = _
+generate' model start 0 = return []
+generate' model start amount =
+  case nextDistribution model start of
+    Just (list, weight) ->
+      do
+        next <- pickRandom list weight
+        print next
+        nexts <- generate' model next (amount - 1)
+        return (start : nexts)
 
 -- Serialize a text model and write a handle.
-writeModel :: TextModel -> Handle -> IO ()
-writeModel model h =
-  ByteString.hPut h $
-    GZip.compress $
-      UTF8.fromString $
-        show model
+-- writeModel :: TextModel -> Handle -> IO ()
+-- writeModel model h =
+--   ByteString.hPut h $
+--     GZip.compress $
+--       UTF8.fromString $
+--         show model
 
 -- Read a text model from a handle.
-readModel :: Handle -> IO TextModel
-readModel h = _
+-- readModel :: Handle -> IO TextModel
+-- readModel h = _
 
-main = do
-  args <- getArgs
-  case args of
-    ["create", modelFile] -> do
-      modelh <- openFile modelFile WriteMode
-      sample <- hGetContents stdin
-      let model = createModel gramLen sample
-      writeModel model modelh
-      hClose modelh
-    ["create", modelFile, sampleFile] -> do
-      modelh <- openFile modelFile WriteMode
-      sampleh <- openFile sampleFile ReadMode
-      sample <- hGetContents sampleh
-      let model = createModel gramLen sample
-      putStrLn $ "Created model with: " ++ show (Map.size model) ++ " n-grams"
-      writeModel model modelh
-      hClose modelh
-      hClose sampleh
-    ["on", startPhrase, sLength, modelFile] -> do
-      modelh <- openFile modelFile ReadMode
-      model <- readModel modelh
-      case readMaybe sLength of
-        (Just outlength) ->
-          generate model startPhrase outlength >>= putStrLn
-        Nothing -> printUsage
-      hClose modelh
-    _ -> printUsage
+-- main = do
+--   args <- getArgs
+--   case args of
+--     ["create", modelFile] -> do
+--       modelh <- openFile modelFile WriteMode
+--       sample <- hGetContents stdin
+--       let model = createModel gramLen sample
+--       writeModel model modelh
+--       hClose modelh
+--     ["create", modelFile, sampleFile] -> do
+--       modelh <- openFile modelFile WriteMode
+--       sampleh <- openFile sampleFile ReadMode
+--       sample <- hGetContents sampleh
+--       let model = createModel gramLen sample
+--       putStrLn $ "Created model with: " ++ show (Map.size model) ++ " n-grams"
+--       writeModel model modelh
+--       hClose modelh
+--       hClose sampleh
+--     ["on", startPhrase, sLength, modelFile] -> do
+--       modelh <- openFile modelFile ReadMode
+--       model <- readModel modelh
+--       case readMaybe sLength of
+--         (Just outlength) ->
+--           generate model startPhrase outlength >>= putStrLn
+--         Nothing -> printUsage
+--       hClose modelh
+--     _ -> printUsage
