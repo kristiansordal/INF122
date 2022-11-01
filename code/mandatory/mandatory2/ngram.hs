@@ -25,12 +25,10 @@ grams n s
   | length s >= fromIntegral n = take (fromIntegral n) s : grams n (tail s)
   | otherwise = []
 
---  otherwise = [tail $ drop (fromIntegral n - 1) s]
-
 -- Produce all n-grams contained in a given string, paired
 -- with the subsequent character
 gramsWithNext :: Integer -> String -> [(NGram, Char)]
-gramsWithNext n s = zip (grams n s) (map last (drop 1 $ grams n s))
+gramsWithNext n s = zip (grams n s) (map last $ drop 1 $ grams n s)
 
 -- -- Recombine a list of n-grams to a string
 combineGrams :: [NGram] -> String
