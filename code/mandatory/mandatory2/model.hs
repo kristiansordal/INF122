@@ -9,7 +9,7 @@ import Control.Arrow
 import Control.Monad
 import Data.List
 import Data.Map (Map)
-import qualified Data.Map as Map
+import Data.Map qualified as Map
 import Data.Maybe
 import NGram
 
