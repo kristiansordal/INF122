@@ -1,8 +1,8 @@
-import Codec.Compression.GZip qualified as GZip
-import Data.ByteString.Lazy qualified as ByteString
-import Data.ByteString.Lazy.UTF8 qualified as UTF8
+import qualified Codec.Compression.GZip as GZip
+import qualified Data.ByteString.Lazy as ByteString
+import qualified Data.ByteString.Lazy.UTF8  as UTF8
 import Data.List
-import Data.Map qualified as Map
+import qualified Data.Map as Map
 import Model
 import NGram
 import System.Environment
@@ -47,6 +47,7 @@ pick weights treshold
 pickRandom :: [(a, Weight)] -> Weight -> IO a
 pickRandom wl total =
   do
+    -- get random number with '<-' to remove IO side effect
     rand <- randomRIO (0, total - 1)
     return $ pick wl rand
 
@@ -57,29 +58,21 @@ generate model start amount =
   do
     let lastGram = last $ grams gramLen start
     genGram <- generate' model lastGram amount
-
     -- get the new start value by taking the element in start at the index obtained by
     -- subtracting the gramLen from the length of start and adding 1
     let start' = take (length start - gramLen + 1) start
     return $ take (fromIntegral amount) (start' ++ combineGrams genGram)
 
--- NOT USED:
--- This is an fmap variant of the above function, unused as it is way less readable in my
--- opinion.
--- fmap
---   (take (fromIntegral amount) . (take (length start - gramLen + 1) start ++) . combineGrams)
---   genGram
--- where
---   lastGram = last $ grams gramLen start
---   genGram = generate' model lastGram amount
-
 -- Helper function which generates n-grams from a model
 generate' :: TextModel -> NGram -> Integer -> IO [NGram]
 generate' model start 0 = return []
 generate' model start amount =
+  -- nextDistributions returns a maybe, so we put it in a case statement
   case nextDistribution model start of
+    -- unpack return value to a tuple
     Just (list, weight) ->
       do
+        -- get next element, then recurse until amount reaches 0
         next <- pickRandom list weight
         nexts <- generate' model next (amount - 1)
         return (next : nexts)
@@ -96,6 +89,7 @@ writeModel model h =
 -- Read a text model from a handle.
 readModel :: Handle -> IO TextModel
 readModel h =
+  -- fmap over the functor (monad, to be more specific) returned by ByteString.hGetContents
   fmap (read . UTF8.toString . GZip.decompress) (ByteString.hGetContents h)
 
 main = do
