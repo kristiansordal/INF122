@@ -1,0 +1,93 @@
+\documentclass{article}
+\input{preamble.tex}
+
+\begin{document}
+    \section{Velg/angi riktige svar}
+
+    \subsection{Evaluering av \texttt{filter even (map (*2) [1 .. 5]) gir:}}
+    \begin{enumerate}[label=\alph*)]
+        \item \texttt{[2,4]}
+        \item \texttt{[4,8]}
+        \item \texttt{[2,6,10]}
+        \item \texttt{[2,4,6,8,10]}
+    \end{enumerate}
+
+    \begin{ans}
+        Funksjonen \texttt{filter even (map (*2) [1 .. 5])} vil først multiplisere alle verdiene i listen med 2, og vi får listen \texttt{[2,4,6,8,10]}. \texttt{filter even} vil filtrere vekk alle verider som ikke er partall, og vi vil til slutt ende opp med listen \texttt{[2,4,6,8,10]}.
+    \end{ans}
+
+    \subsection{Hva blir resultatet av å evaluere \texttt{take 5 nats} med følgende definisjoner?} 
+
+    \begin{enumerate}[label=\alph*)]
+        \item \texttt{nats = 0:1:tail nats}
+        \item \texttt{nats = 0 : tail nats}
+        \item \texttt{nats = 0:map (+1) nats}
+        \item \texttt{nats = map (+1) [0..]}
+    \end{enumerate}
+
+    \begin{ans}
+    \begin{enumerate}[label=\alph*)]
+        \item \texttt{nats = 0:1:tail nats = [0,1,1,1,1]}
+        \item \texttt{nats = 0 : tail nats = [0}
+        \item \texttt{nats = 0:map (+1) nats = [0,1,2,3,4]}
+        \item \texttt{nats = map (+1) [0..] = [1,2,3,4,5]}
+    \end{enumerate}
+    \end{ans}
+
+    \subsection{Hva blir resultatet av å evaluerere \texttt{concat ["ab", "cd", "","efg"]} med hver av følgende defininsjoner?}
+
+    \begin{enumerate}[label=\alph*)]
+        \item \texttt{concat xss = [x | x <- xss]}
+        \item \texttt{concat xss = [x | xs <- xss, x <- xs]}
+        \item \texttt{concat xss = concat (tail xss)}
+        \item \texttt{concat xss = map (++) xss}
+    \end{enumerate}
+
+    \begin{ans}
+    \begin{enumerate}[label=\alph*)]
+        \item \texttt{concat xss = [x | x <- xss]} = ["ab","cd","","efg"] 
+        \item \texttt{concat xss = [x | xs <- xss, x <- xs] = abcdefg}
+        \item \texttt{concat xss = concat (tail xss) = cdefg}
+        \item \texttt{concat xss = map (++) xss = ["bc","de", "", "fgh"]}
+    \end{enumerate}
+    \end{ans}
+
+    \subsection{Funksjonen \texttt{apply} definert ved \texttt{apply f x = f x} har typen}
+    \begin{enumerate}[label=\alph*)]
+        \item \texttt{a -> b -> c}
+        \item \texttt{(a -> b) a -> b}
+        \item \texttt{a -> (b -> a) -> b}
+        \item \texttt{a -> b -> (a -> b)}
+    \end{enumerate}
+
+    \begin{ans}
+        Denne funksjonen har typen \texttt{(a -> b) -> a -> b}
+    \end{ans}
+
+    \section{Matrisemultiplikasjon}
+
+    \begin{ans}
+        Kode for Matrisemultiplikasjon:
+        \begin{lstlisting}
+import Data.List (transpose)
+
+row :: [[Int]] -> Int -> [Int]
+row m n  = m !! max 0 (n - 1)
+
+col :: [[Int]] -> Int -> [Int]
+col m n = transpose m !! max 0 (n - 1)
+
+cols :: [[Int]] -> [[Int]]
+cols = transpose
+
+mult :: [[Int]] -> [[Int]] -> [[Int]]
+mult m n = [map (multrc (row m x)) (cols n) | x <- [1 .. length m]]
+
+multrc :: [Int] -> [Int] -> Int
+multrc r c = sum [x * y | (x,y) <- zip r c]
+        \end{lstlisting}
+    \end{ans}
+
+
+
+\end{document}
