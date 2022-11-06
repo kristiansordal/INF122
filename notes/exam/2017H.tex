@@ -1,0 +1,98 @@
+\documentclass{article}
+\input{preamble.tex}
+
+\begin{document}
+    \section{Programmer Følgende Funksjoner}
+
+    \textbf{1.1} \texttt{harEl:: (t -> Bool) -> [t] -> Bool}, slik at \texttt{harEl pr xs = True} hvis listen \texttt{xs} har et element \texttt{x} som tilfredsstiller predikatet \texttt{pr}, dvs, \texttt{pr x = True} og \texttt{False} ellers. F.eks:
+    \begin{lstlisting}
+harEl (==3) [1,1,2,3,2] = True
+harEl (<3) [1,1,2,3,2] = True
+harEl (>5) [1,1,2,3,2] = False
+    \end{lstlisting}
+
+    \begin{ans}
+        Bruker \texttt{any}.
+        \begin{lstlisting}
+harEl :: (t -> Bool) -> [t] -> Bool
+harEl = any
+        \end{lstlisting}
+    \end{ans}
+
+    \textbf{1.1} \texttt{el :: (t -> Bool) -> [t] -> t} slik at \texttt{ el pr xs} returnerer det første elementet \texttt{x} fra listen \texttt{xs} som tilfredsstiller predikatet \texttt{pr}. Funksjonen antar at et slikt element finnes i listen. F.eks:
+
+    \begin{lstlisting}
+el ((=='a').fst) [('b',2), ('a',3),('a',4)] = ('a',3)
+el ((>3).snd) [('b',2), ('a',3), ('a',4)] = ('a',4)
+    \end{lstlisting}
+
+    \begin{ans}
+        Bruker \texttt{head} og \texttt{filter}.
+        \begin{lstlisting}
+el :: (t -> Bool) -> [t] -> t
+el pr = head . filter pr
+        \end{lstlisting}
+    \end{ans}
+
+    \textbf{1.3} \texttt{gRep :: (t -> Bool) -> t -> [t] -> [t]} slik at \texttt{gRep pr y xs} erstatter med \texttt{y}, ethvert element \texttt{x} fra listen \texttt{xs} som tilfredsstiller predikatet \texttt{pr}. F. eks:
+
+    \begin{lstlisting}
+gRep (<'d') 'z' "abcd" = "zzzd" 
+gRep (=='a') 'x' "abcbcac" = "xbcbcxc" 
+    \end{lstlisting}
+
+    \begin{ans}
+        Bruker \texttt{map} og en lambda funksjon
+        
+        \begin{lstlisting}
+gRep :: (t -> Bool) -> t -> [t] -> [t]
+gRep pr y = map (\x ->
+  case () of
+  _ | pr x -> y
+    | otherwise -> x
+  )
+        \end{lstlisting}
+    \end{ans}
+
+\textbf{1.4} Vi bruker Binære trær med heltall lagret i alle noder (inklusivt blader) definert ved \texttt{data BT = B Int | N BT Int BT}. Programmer følgende funksjoner:
+
+\begin{enumerate}[label=\alph*)]
+    \item \texttt{elf :: BT -> Int -> Bool}, slik at \texttt{elt tr x = True} hvis tallet \texttt{x} forekommer i treet \texttt{tr}, og \texttt{False} ellers. F.eks \texttt{elt (N (B 1) 3 (B 0)) 2 = True} of \texttt{elt (B 1) 2 = False}.
+    \item \texttt{toL :: BT -> [Int]} slik at \texttt{toL tr} er en liste med alle tall som forekommer i i treet \texttt{tr}.
+    \item \texttt{dup :: BT -> Bool} slik at \texttt{dup tr = True} hvis noen tall forekommer (minst) to ganger i treet \texttt{tr} og \texttt{False} ellers.
+\end{enumerate}
+
+\begin{ans}
+    \textbf{a)} Bruker rekursjon, pattern matching og guards
+    \begin{lstlisting}
+elt :: BT -> Int -> Bool
+elt (B val) x = val == x
+elt (N left val right ) x
+  | val == x = True
+  | val /= x = elt left x || elt right x
+\end{lstlisting}
+\bigskip
+
+    \textbf{b)} Bruker pattern matching
+    \begin{lstlisting}
+toL :: BT -> [Int]
+toL (B x) = [x]
+toL (N left val right) = toL left ++ [val] ++ toL right
+    \end{lstlisting}
+
+    \textbf{c)} Bruker en hjelpefunksjon
+    \begin{lstlisting}
+dup :: BT -> Bool
+dup = dupL . toL
+
+dupL :: [Int] -> Bool
+dupL [] = False
+dupL (x:xs) = elem x xs || dupL xs
+    \end{lstlisting}
+\end{ans}
+
+\section{Rettede Grafer}
+\textbf{2.1} Programmer en funksjon \texttt{naboL :: Eq t => [(t,t)]->[(t,[t])] s} som konverterer en kantliste representasjon til en naboliste
+
+
+\end{document}
