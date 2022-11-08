@@ -12,7 +12,7 @@ import Control.Arrow
 import Control.Monad
 import Data.List
 import Data.Map (Map)
-import qualified Data.Map as Map
+import Data.Map qualified as Map
 
 -- Rename types to clarify some type signatures later
 type NGram = String

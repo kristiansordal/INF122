@@ -1,8 +1,8 @@
-import qualified Codec.Compression.GZip as GZip
-import qualified Data.ByteString.Lazy as ByteString
-import qualified Data.ByteString.Lazy.UTF8  as UTF8
+import Codec.Compression.GZip qualified as GZip
+import Data.ByteString.Lazy qualified as ByteString
+import Data.ByteString.Lazy.UTF8 qualified as UTF8
 import Data.List
-import qualified Data.Map as Map
+import Data.Map qualified as Map
 import Model
 import NGram
 import System.Environment
