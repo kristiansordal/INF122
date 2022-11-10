@@ -1,0 +1,138 @@
+\documentclass{article}
+\input{preamble.tex}
+
+\begin{document}
+    \section{Problem 2 - Higher-Order functions}
+
+    (a) Given the function \texttt{foldr} as below
+
+    \begin{lstlisting}
+foldr :: (a -> b -> b) -> b -> [a] -> b 
+foldr f v [] = v
+foldr f v (x:xs) = f x (foldr f v xs)
+    \end{lstlisting}
+
+    Define a new function
+
+    \[ \texttt{append :: [a] -> [a] -> [a]} \]
+
+    That takes two lists as input and returns their concatenations
+
+    \begin{ans}
+        \hspace{1em}
+        \begin{lstlisting}
+append :: [a] -> [a] -> [a]
+append = foldr (:)
+        \end{lstlisting}
+    \end{ans}
+
+    (b) Given the function \texttt{foldl} as below:
+            
+    \begin{lstlisting}
+foldl :: (a -> b -> a) -> a -> [b] -> a 
+foldl f v [] = v
+foldl f v (x:xs) = foldl f (f v x) xs
+    \end{lstlisting}
+
+    What does the following expression return?
+
+    \begin{lstlisting}
+foldl (\x -> \y -> x/2 + y) 4 [2,4,6]
+    \end{lstlisting}
+
+    \begin{ans}
+        This function would return \texttt{9.0}. This is because \texttt{foldl } works in the following manner 
+
+        \begin{lstlisting}
+foldl (\x -> \y -> x/2 + y) 4 [2,4,6]
+= foldl (\x -> \y -> x/2 + y) 4 [2] = 4
+= foldl (\x -> \y -> x/2 + y) 4 [4] = 6
+= foldl (\x -> \y -> x/2 + y) 6 [6] = 9
+        
+        \end{lstlisting}
+    \end{ans}
+
+    \section{Problem 3 - Phone Book}
+    In this task, you are asked to implement a phone book in Haskell. Use the following type declarations for the implementation.
+
+    \begin{lstlisting}
+type Name = String 
+type Pnum = Integer 
+type Pbook = Name -> Maybe Pnum
+    \end{lstlisting}
+
+    Where \texttt{Pbook} is the data type of the phone book, \texttt{Name} and \texttt{Pnum} are the types of names and phone numbers, respectively.
+    \medskip
+
+    With this phone book, one can \textit{insert} a new entry by providing a name and an 8-digit number, \textit{lookup} the phone number with a given name, and \textit{delete} an entry with a given name. Each name in the phone book should be unique.
+    \medskip
+
+    (a) Define the function \texttt{lookup :: Pbook -> Name -> Maybe Pnum} which returns the corresponding 8-digit number if the input (of type \texttt{Name}) exists in the phone book (of type Pbook); otherwise, the function should return an appropriate value.
+
+    \begin{ans}
+        \hspace{1em}
+        \begin{lstlisting}
+lookup :: Pbook -> Name -> Maybe Pnum
+lookup b = b
+        \end{lstlisting}
+    \end{ans}
+
+    (b) Define the function \texttt{insert :: Pbook -> Name -> Pnum -> Pbook} which adds an entry associating the input name (of type \texttt{Name}) with the input 8-digit number (of type \texttt{Pnum}) in the phone book (of type Pbook). If the length of the number is incorrect, the function \texttt{insert} should call the function \texttt{error :: [Char] -> a}. You do not have to implement the \texttt{error} function.
+
+    \begin{ans}
+        \hspace{1em}
+       \begin{lstlisting}
+insert :: Pbook -> Name -> Pnum -> Pbook
+insert b n p
+  | length (show p) > 8 = error "Invalid phone number format"
+  | otherwise = \x -> if x == n then Just p else b x
+       \end{lstlisting} 
+    \end{ans}
+
+    (c) Define the function \texttt{delete :: Pbook -> Name -> Pbook} which removes the entry of the given name (of type \texttt{Name}) and the corresponding 8-digit number from the phone book (of type \texttt{Pbook}).
+
+    \section{Problem 4 - The game Nim}
+    We consider in this task the simplified version of Nim, a mathematical game of strategy in which two players take turns to remove either 1, 2, or 3 objects from a heap. The player who empties the heap wins. The following example is an illustration that shows how the game, which starts with a heap of 10 objects, is played between two players: Player 1 and Player 2.
+    \medskip
+
+    \textbf{A winner in Nim:} We assume the players in this game are smart, and therefore Player 1 in the last round in the illustrating example (*) will take two objects but not one from the heap. That is, the player who is going to remove objects from a heap containing only 1, 2, or 3 objects wins the game by default.
+
+    \subsection{Implementation of Nim}
+    You are going to implement the game Nim with the corresponding interface.
+The game should start with a heap containing a random number of objects. This random number should be of type Integer and be within the range of 10 to 20. After generating the number, the interface of the game will (i) display the number of objects in the heap, and (ii) ask a player to input the number of objects to be removed from the heap, then (iii) deduct the input number of objects from the current heap. The implementation has to ensure that the player inputs a number between 1 and 3; if the input is out of range, the interface should warn the player about the wrong input and ask for the input again without aborting. The game will continue by repeating (i) – (iii), with an alternating player for each round, until a winner is found (see the winner definition above). The following figure shows how the interface should interact with the players and ultimately find the winner for the illustrating example (*). Note that those lines with a single number are inputs from the players.
+
+By following the given structure of the implementation, you are asked to
+
+(a) Complete the \texttt{main} function, in which you have to generate the random number (\texttt{randNum}) as the initial number of objects for the heap in the game;
+
+\begin{ans}
+    \hspace{1em}
+    \begin{lstlisting}
+main :: IO ()
+main = do
+  gen <- newStdGen
+  let (num, gen') = randomR (10, 20) gen :: (Integer, StdGen)
+  play num 1
+
+play :: Integer -> Integer -> IO ()
+play n p =
+  if n < 3
+    then do
+      putStrLn $ "Player " ++ show p ++ " wins"
+    else do
+      putStrLn $ "Player " ++ show p ++ "'s turn"
+      input <- getLine
+      let remove = read input
+      if remove > 0 && remove < 4
+        then do
+          putStrLn $ "Player " ++ show p ++ " removed " ++ show remove ++ " numbers from the heap"
+          putStrLn $ "There are now " ++ show (n - remove) ++ " numbers in the heap"
+          if p == 1
+            then play (n - remove) 2
+            else play (n - remove) 1
+        else do
+          putStrLn "Wrong input"
+          play n p
+    \end{lstlisting}
+\end{ans}
+\end{document}

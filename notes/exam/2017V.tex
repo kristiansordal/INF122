@@ -1,0 +1,75 @@
+\documentclass{article}
+\input{preamble.tex}
+
+\begin{document}
+    \section{Problem 2 - Higher Order Functions}
+
+    (a) Given the function \texttt{foldr} as below
+
+    \begin{lstlisting}
+foldr :: (a -> b -> b) -> b -> [a] -> b 
+foldr f v [] = v
+foldr f v (x:xs) = f x (foldr f v xs)
+    \end{lstlisting}
+
+    Using the function \texttt{foldr}, define a function
+
+    \[ \texttt{lengthsum :: (Num a, Num b) => [a] -> (b, a)} \]
+
+    That takes a list of numbers as input, then return the length and the sum of the list as a pair.
+
+    \begin{ans}
+    \hspace{1em}
+     \begin{lstlisting}
+lengthSum :: (Num a, Num b) => [a] -> (b, a)
+lengthSum = foldr (\n (x, y) -> (1 + x, n + y)) (0, 0)
+     \end{lstlisting}  
+    \end{ans}
+
+    (b) Given the function \texttt{foldl} as below:
+            
+    \begin{lstlisting}
+foldl :: (a -> b -> a) -> a -> [b] -> a 
+foldl f v [] = v
+foldl f v (x:xs) = foldl f (f v x) xs
+    \end{lstlisting}
+
+    Using the function \texttt{foldl} define a function
+
+    \[ \texttt{inList :: (Eq a) => a -> [a] -> Bool} \]
+
+    that takes a value and a list of the same type as inputs, then checks wheter the value is an element of the list.
+
+    \begin{ans}
+        \hspace{1em}
+        \begin{lstlisting}
+inList :: (Eq a) => a -> [a] -> Bool
+inList x = foldl (\acc y -> (x == y) || acc) False
+        \end{lstlisting}
+    \end{ans}
+
+
+    (c) What do the following expressions return?
+    \medskip
+
+    (i) \texttt{foldr (:) "hello" "world!"} = "world!hello"
+    \medskip
+
+    (ii) 
+    \begin{lstlisting}
+       foldl (\xs -> \x -> x:xs) "INF122" "exam" -> 
+    \end{lstlisting}
+
+    \section{Problem 3 - An evaluator}
+    Consider the following type declaration:
+
+    \[ \texttt{data Expr = V Int | M Expr Expr | D Expr Expr} \]
+
+    You are asked to implement an evaluator
+
+    \[ \texttt{eval :: Expr -> Maybe Int} \]
+
+    which evaluate an expression of type Expr defined above
+
+
+\end{document}
