@@ -69,7 +69,78 @@ inList x = foldl (\acc y -> (x == y) || acc) False
 
     \[ \texttt{eval :: Expr -> Maybe Int} \]
 
-    which evaluate an expression of type Expr defined above
+    which evaluates an expression of type Expr defined above
+
+    \begin{ans}
+        \hspace{1em}
+
+        \begin{lstlisting}
+data Expr = V Int | M Expr Expr | D Expr Expr
+
+div' :: Int -> Int -> Maybe Int
+div' _ 0 = Nothing
+div' x y = Just (x `div` y)
+
+eval :: Expr -> Maybe Int
+eval (V x) = Just x
+eval (M r l) =
+  case eval r of
+    Nothing -> Nothing
+    Just x -> case eval l of
+      Nothing -> Nothing
+      Just y ->
+        if x >= 0 && y >= 0
+          then Just (x * y)
+          else Nothing
+eval (D r l) =
+  case eval r of
+    Nothing -> Nothing
+    Just x -> case eval l of
+      Nothing -> Nothing
+      Just y -> div' x y
+        \end{lstlisting}
+    \end{ans}
+
+    \section{Problem 5 - Input and Output}
+
+    In this problem, you are not supposed to use any build-in functions in Haskell except \texttt{return} and list operators
+    \medskip
+
+    (a) Given a lsit of \texttt{IO}-actions, implement a function
+
+    \[ \texttt{toDoList :: [IO a] -> IO [a]} \]
+
+    which excecutes each of the \texttt{IO}-actions in the list and gives back an \texttt{IO}-action that returns a list containing the corresponding results in the same order as output.
+
+    \begin{ans}
+        \hspace{1em}
+        \begin{lstlisting}
+toDoList :: [IO a] -> IO [a]
+toDoList [] = return []
+toDoList (x : xs) = do
+  action <- x
+  list' <- toDoList xs
+  return (action : list')
+        \end{lstlisting}
+    \end{ans}
+
+    (b) Implement a map function for \texttt{IO}-actions
+
+    \[ \texttt{mapActions :: (a -> IO b) -> [a] -> IO [b]} \]
+
+    which takes a functions of type \texttt{a -> IO b}, and then applies this function to each item in an input list of type \texttt{[a]}. The \texttt{mapActions} function finally gives bac an \texttt{IO}-action that returns a list.
+
+    \begin{ans}
+        \hspace{1em}
+        \begin{lstlisting}
+mapActions :: (a -> IO b) -> [a] -> IO [b]
+mapActions f [] = return []
+mapActions f (x : xs) = do
+  y <- f x
+  ys <- mapActions f xs
+  return (y : ys)
+        \end{lstlisting}
+    \end{ans}
 
 
 \end{document}
