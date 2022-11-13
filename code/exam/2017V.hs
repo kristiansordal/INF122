@@ -14,21 +14,23 @@ div' x y = Just (x `div` y)
 
 eval :: Expr -> Maybe Int
 eval (V x) = Just x
-eval (M r l) =
-  case eval r of
-    Nothing -> Nothing
-    Just x -> case eval l of
-      Nothing -> Nothing
-      Just y ->
-        if x >= 0 && y >= 0
-          then Just (x * y)
-          else Nothing
-eval (D r l) =
-  case eval r of
-    Nothing -> Nothing
-    Just x -> case eval l of
-      Nothing -> Nothing
-      Just y -> div' x y
+eval (M r l) = eval r >>= \n -> eval l >>= \m -> Just (m * n)
+eval (D r l) = eval r >>= \n -> eval l >>= \m -> div' n m
+
+-- case eval r of
+--   Nothing -> Nothing
+--   Just x -> case eval l of
+--     Nothing -> Nothing
+--     Just y ->
+--       if x >= 0 && y >= 0
+--         then Just (x * y)
+--         else Nothing
+
+-- case eval r of
+--   Nothing -> Nothing
+--   Just x -> case eval l of
+--     Nothing -> Nothing
+--     Just y -> div' x y
 
 toDoList :: [IO a] -> IO [a]
 toDoList [] = return []

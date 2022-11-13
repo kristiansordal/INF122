@@ -24,7 +24,7 @@ divide100By 0 = Nothing
 divide100By a = Just (100 `div` a)
 
 g :: String -> Maybe Int
-g str = readInt str >>= divide100By
+g str = readInt str divide100By
 
 -- g str = do
 --   parsedInt <- readInt str
