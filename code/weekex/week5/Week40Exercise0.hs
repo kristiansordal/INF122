@@ -17,10 +17,10 @@ getMiddle x = x !! max 0 (length x `div` 2)
 palindrome :: String -> Maybe Palindrome
 palindrome x
   | x == reverse x =
-    case () of
-      ()
-        | lenEven x -> Just (EvenLen (getFirstHalf x))
-        | otherwise -> Just (OddLen (getFirstHalf x) (getMiddle x))
+      case () of
+        ()
+          | lenEven x -> Just (EvenLen (getFirstHalf x))
+          | otherwise -> Just (OddLen (getFirstHalf x) (getMiddle x))
   | otherwise = Nothing
 
 toString :: Palindrome -> String

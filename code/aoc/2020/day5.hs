@@ -17,6 +17,6 @@ seatID (x : xs) (r1, r2) (c1, c2)
   | x == 'L' = seatID xs (r1, r2) (c1, c2 - (c2 - c1) `div` 2 - 1)
 
 mySeat :: [Integer] -> Integer
-mySeat list
-  | head list `subtract` head (tail list) == 2 = head (tail list) - 1
-  | otherwise = mySeat (tail list)
+mySeat (x : xs)
+  | x `subtract` head xs == 2 = head xs - 1
+  | otherwise = mySeat xs
