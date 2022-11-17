@@ -1,0 +1,224 @@
+\documentclass{article}
+\input{preamble.tex}
+
+\begin{document}
+\section{Øvingsoppgaver}
+    \subsection{Regne / Flervalgsoppgaver}
+
+    \begin{enumerate}[label=\alph*)]
+        \item Hva er verdien til uttrykket \texttt{map (+3) [1,2,3]}? \( \rightarrow  \) \texttt{[4,5,6]}
+        \item Hva er verdien til uttrykket \texttt{sum [x + 3 | x <- [1,2,3]]}? \( \rightarrow \) \texttt{15}
+        \item Hva er verdien til uttrykket \verb!(\!\texttt{x y -> x - y)} 7 3? \( \rightarrow \) \texttt{4}
+        \item Hva er typen til uttrykket \verb!(\!\texttt{x -> 3 : tail x)}? \( \rightarrow \) \texttt{Num a => [Int] -> [Int]}
+        \item Hva er riktig type til uttrykket \texttt{(3, Just "Haskell")}? \( \rightarrow \) \texttt{(Integer, Maybe String)}
+        \item Hva er riktig type til uttrykket \texttt{Just (Left Nothing)}? \( \rightarrow \) \texttt{Maybe (Either (Maybe a) b)}
+        \item Hvilken kind har \texttt{Either String}? \( \rightarrow \) \texttt{* -> * -> *}
+        \item Hvilken Kind har \texttt{Integer -> Integer} \( \rightarrow \) \texttt{*}
+        \item Hva er typen til funksjonen \texttt{f x y = if x then y else y * 3}?
+            \begin{itemize}
+                \item \texttt{f :: Bool -> Integer -> Integer}
+                \item \texttt{f :: (Num a) -> Bool -> a -> a}
+            \end{itemize}
+    \end{enumerate}
+
+    \subsection{Enkel IO}
+    Skriv et program som leser inn et navn på formen "Fornavn Etternavn" og returnerer "Etternavn, Fornavn"
+
+    \begin{ans}
+        \hspace{1em}
+        \begin{lstlisting}
+    main = do
+      name <- parse <$> getLine
+      print name
+
+    parse :: String -> String
+    parse name = last (words name) ++ ", " ++ head (words name)
+            
+        \end{lstlisting}
+    \end{ans}
+
+\subsection{Listeoperasjoner}
+Husk at \texttt{concat :: [[a]] ->[a]} kan brukes til å sette sammen en liste med strenger til en streng.
+
+Konsonantene i språket vårt er \texttt{"bcdfghjklmnpqrstvwxz"}.
+
+\begin{enumerate}[label=\alph*)]
+    \item Skriv en funksjon \texttt{isConsonant :: Char -> Bool} som sjekker om en char er en konsonant på norsk.
+        \begin{lstlisting}
+isConsonant :: Char -> Bool
+isConsonant c = c `elem` "bcdfghjklmnpqrstvwxz"
+        \end{lstlisting}
+
+Her er en funksjon som oversetter til røverspråket:
+
+\begin{lstlisting}
+translate :: String -> String
+translate word = concat [if isConsonant x then [x] ++ "o" ++ [x] else [x] | x <- word]
+\end{lstlisting}
+
+\item Funksjonen translate bruker listekomprehensjon, skriv den slik at den bruker map istedet.
+    \begin{lstlisting}
+translate :: String -> String
+translate = concatMap (\x -> if isConsonant x then [x] ++ "o" ++ [x] else [x])
+    \end{lstlisting}
+
+\item Skriv funksjonen \texttt{translate} slik at den bruker do-notasjon for lister
+
+    \begin{lstlisting}
+translate :: String -> IO String
+translate (x : xs) = do
+  if isConsonant x
+    then return $ [x] ++ "o" ++ [x] ++ translate xs
+    else return $ x : translate xs
+    \end{lstlisting}
+
+\item Skriv en funksjon \texttt{differences :: [Integer] -> [Integer]} som regner ut alle positive differanser mellom elementene i en liste, ved hjelp av listekomprehensjon. Eksempel: \texttt{differences [1,2,3] = [1,2,1]} fordi \( 2 - 1 = 1 \), \( 3 - 1 = 2 \) og \( 3 - 2 = 1 \).
+
+\item Skriv en funksjon \texttt{everyOther :: [a] -> [a]}, som fjerner annethvert element fra en liste. Behold det første elementet i listen, fjern det andre, behold det tredje osv. Eksempel: \texttt{everyOther [1,2,3,4] = [1,3]}
+    \begin{lstlisting}
+everyOther :: [a] -> [a]
+everyOther [] = []
+everyOther [x] = [x]
+everyOther (x : y : ys) = x : everyOther ys
+        
+    \end{lstlisting}
+\end{enumerate}
+
+    \subsection{Map}
+    I denne oppgaven skal vi se på hvordan vi kan bruke maps til å representere en graf hvor vi har merket kantene.
+
+    \[ \texttt{type Graph label node = Map node (Map label node)} \]
+
+    Hver node mappes til et map som forteller hvilken node som ligger i enden til en kan med en viss merkelapp (\texttt{label}). Her er en graf med tre noder hvor merkelappene er bokstaver
+
+    \begin{lstlisting}
+data N = A | B | C 
+
+graph0 :: Graph Char N
+graph0 = Map.fromList [(A,Map.fromList [('r',B)])
+                       ,(B,Map.fromList [('o',B),('t',C)])
+                       ,(C,Map.fromList [('e',A),('t',C)])]
+    \end{lstlisting}
+
+
+    \begin{enumerate}[label=\alph*)]
+        \item Skriv en funksjon som setter inn en kant med en gitt merkelapp mellom to noder i en graf.
+            \begin{lstlisting}
+insertLabeledEdge :: (Ord node) => Graph label node -> node -> node -> label -> Graph label node
+insertLabeledEdge g n1 n2 l = Map.insert n1 (Map.singleton l n1) g
+            \end{lstlisting}
+        \item Bruk do-notasjon for Maybe til å skrive en funksjon som slår opp en node og en label i en graf og gir den neste noden
+
+            \begin{lstlisting}
+goNext :: (Ord node, Ord label) => Graph label node -> node -> label -> Maybe node
+goNext graph start label = do
+  labelMap <- Map.lookup start graph
+  Map.lookup label labelMap
+            \end{lstlisting}
+
+        \item Skriv \texttt{goNext} ved hjelp av \texttt{>>=} operatoren istedet for do-notasjon.
+
+            \begin{lstlisting}
+goNext' :: (Ord node, Ord label) => Graph label node -> node -> label -> Maybe node
+goNext' graph start label = Map.lookup start graph >>= Map.lookup label
+            \end{lstlisting}
+        \item Skriv en rekursiv funksjon som følger en liste med label fra en start node til en sluttnode
+
+            \begin{lstlisting}
+followPath :: (Ord node, Ord label, Ord N) => Graph label node -> node -> [label] -> Maybe node
+followPath g n (x : xs) =
+  case goNext' g n x of
+    (Just node) -> followPath g node xs
+    Nothing -> Just n
+            \end{lstlisting}
+
+    \end{enumerate}
+
+    \subsection{foldr vs foldl}
+
+    I denne oppgaven skal vi se på forskjellen mellom foldr og foldl. Husk at definisjonene til \texttt{foldr} og \texttt{foldl} er som følger.
+
+    \begin{lstlisting}
+foldr :: (a -> b -> b) -> b -> [a] -> b
+foldr _ b [] = b
+foldr f b (a:as) = f a (foldr f b as)
+
+foldl :: (b -> a -> b) -> b -> t a -> b
+foldl _ b [] = b
+foldl f b (a:as) = foldl f (f b a) as
+    \end{lstlisting}
+
+
+
+    a) Bruk definisjonen til å regne ut \texttt{foldr (:) [] [1,2,3]}
+    
+    \begin{ans}
+        \hspace{1em}
+        \begin{lstlisting}
+foldr (:) [] [1,2,3] = (:) 1 foldr (:) [] [2,3]
+                       = (:) 1 (:) 2 foldr (:) [] [3]
+                       = (:) 1 (:) 2 (:) 3 foldr (:) [] []
+                       = (:) 1 (:) 2 (:) 3 []
+                       = 1 : 2 : 3 : []
+                       = [1,2,3]
+        \end{lstlisting}
+    \end{ans}
+        b) Bruk definisjonen til å regne ut \texttt{foldl }\verb!(\!\texttt{ -> a:l} [] [1,2,3]
+    \begin{ans}
+        \hspace{1em}
+        \begin{lstlisting}
+foldl (\l a -> a:l) [] [1,2,3] = foldl (\l a -> a:l) 1:[] [2,3]
+                               = foldl (\l a -> a:l) 2:1:[] [3]
+                               = foldl (\l a -> a:l) 3:2:1:[] []
+                               = 3:2:1:[]
+                               = [3,2,1]
+        \end{lstlisting}
+    \end{ans}
+    
+    Funksjonen \texttt{repeat :: a -> [a]} er funksjonen som gir en uendelig liste som repeterer et enkelt element.
+
+    \begin{lstlisting}
+repeat :: a -> [a]
+repeat x = x : repeat x
+    \end{lstlisting}
+
+    Funksjonen \texttt{and :: [Bool] -> Bool} kan skrives både ved hjelp av \texttt{foldr} og \texttt{foldl}.
+
+    \texttt{and = foldr (\&\&) True}
+    
+    eller:
+
+    \texttt{and' = foldl (\&\&) True}
+
+    c) Forklar hva som skjer hvis man evaluerer følgende uttrykk:
+
+    \begin{itemize}
+        \item and (repeat False)
+        \item and' (repeat False)
+    \end{itemize}
+
+    \paragraph{and} - Dersom man tar en liste med bools (\texttt{[False, False, False, False, False]}), vil \texttt{and} gjøre følgende.
+
+    \begin{lstlisting}
+and (repeat False) = foldr (&&) True [False, False, False, ..]
+                   = True && False foldr (&&) True [False, False, ..]
+                   = False foldr (&&) True [False, False, ..]
+                   = False foldr (&&) True [False, False, ..]
+                   = ...
+                   = False
+    \end{lstlisting}
+
+    Som vi ser vil resultatet alltid evalueres til \texttt{False}, og derfor vil det returneres \texttt{False}.
+
+    \paragraph{and'} - Hvis vi tar samme liste, vil følgende skje
+
+    \begin{lstlisting}
+and' (repeat False) = foldl (&&) True [False, False, False, ..]
+                    = foldl (&&) ((&&) True False) [False, False, ..]
+                    = ...
+    \end{lstlisting}
+
+    Ettersom foldl evalueres lazy, vil denne funksjonen henge for alltid og aldri komme til noe resultat.
+
+
+\end{document}

@@ -3,10 +3,10 @@
 module Week43Exercise2 where
 
 import Data.Map (Map)
-import qualified Data.Map as Map
+import Data.Map qualified as Map
 import Data.Maybe
 import Data.Set (Set)
-import qualified Data.Set as Set
+import Data.Set qualified as Set
 
 class IntegerGraph g where
   emptyGraph :: g
@@ -21,11 +21,11 @@ instance IntegerGraph MyGraph where
   emptyGraph = Map.empty
   insertEdge n1 n2 = Map.insertWith Set.union n2 Set.empty . Map.insertWith Set.union n1 (Set.singleton n2)
   insertNode n = Map.insertWith Set.union n Set.empty
-  nodeInGraph n = Map.member n
   edgeInGraph n1 n2 g =
     case Map.lookup n1 g of
       Just set -> Set.member n2 set
       Nothing -> False
+  nodeInGraph = Map.member
 
 graph :: (IntegerGraph g) => g
 graph =

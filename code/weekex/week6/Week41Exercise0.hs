@@ -1,9 +1,9 @@
 module Week41Exercise0 where
 
 import Data.Map (Map)
-import qualified Data.Map as Map
+import Data.Map qualified as Map
 import Data.Set (Set)
-import qualified Data.Set as Set
+import Data.Set qualified as Set
 
 type Graph n = Map n (Set n)
 
