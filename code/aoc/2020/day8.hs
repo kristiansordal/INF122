@@ -11,28 +11,9 @@ main = do
 
 type Instruction = (String, Integer)
 
--- changeArr :: Array Int Instruction -> Array Int Instruction ->Integer
--- changeArr arr orig =
---   case acc' arr Set.empty 0 0 of
---     (Just ix) = case fst $ arr ! ix of
---                 "acc" = changeArr
---                 "nop"
---                 "jmp"
---     (Nothing) = acc' arr Set.empty 0 0
+terminates :: Array Int Instruction -> Set (Instruction, Int) -> Int -> Integer -> Maybe (Instruction, Int)
 
--- acc' :: Array Int Instruction -> Set (Instruction, Int) -> Int -> Integer -> Maybe Integer
--- acc' arr set ix x
---   | ix == fromIntegral (length arr + 1) = Nothing
---   | Set.member (curr, ix) set = Just $ toInteger ix
---   | otherwise =
---       case instruction of
---         "acc" -> acc' arr (Set.insert (curr, ix) set) (ix + 1) (x + fromIntegral val)
---         "nop" -> acc' arr (Set.insert (curr, ix) set) (ix + 1) x
---         "jmp" -> acc' arr (Set.insert (curr, ix) set) (ix + fromIntegral val) x
---   where
---     curr = arr ! ix
---     instruction = fst curr
---     val = snd curr
+terminates arr set ix x
 
 acc :: Array Int Instruction -> Set (Instruction, Int) -> Int -> Integer -> Integer
 acc arr set ix x

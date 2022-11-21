@@ -45,7 +45,10 @@ graph0 =
     ]
 
 insertLabeledEdge :: (Ord node) => Graph label node -> node -> node -> label -> Graph label node
-insertLabeledEdge g n1 n2 l = Map.insert n1 (Map.singleton l n1) g
+insertLabeledEdge g n1 n2 l = Map.insert n2 (Map.singleton l n1) g
+
+-- insertLabeledEdge :: (Ord node) => Graph label node -> node -> node -> label -> Graph label node
+-- insertLabeledEdge g n1 n2 l = Map.insert n1 (Map.singleton l n1) g
 
 goNext :: (Ord node, Ord label) => Graph label node -> node -> label -> Maybe node
 goNext graph start label = do

@@ -10,7 +10,7 @@ main = do
   print ansP1
 
 memoryGame :: Map Integer Integer -> Integer -> Integer -> Integer
-memoryGame ages prev 2021 = prev
+memoryGame ages prev 30000001 = prev
 memoryGame ages prev turn =
   case Map.lookup prev ages of
     Just prevAge -> memoryGame (Map.insert prev (turn - 1) ages) (turn - 1 - prevAge) (turn + 1)
